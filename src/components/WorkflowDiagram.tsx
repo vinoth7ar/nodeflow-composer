@@ -205,7 +205,7 @@ const WorkflowDiagram = () => {
       draggable: false,
     },
 
-    // CW/FLUME Workflow nodes - aligned by type
+    // CW/FLUME Workflow nodes - aligned by type to match LSA
     {
       id: 'cwflume-commitment-label',
       type: 'text',
@@ -217,7 +217,7 @@ const WorkflowDiagram = () => {
     {
       id: 'cwflume-accept-text',
       type: 'text',
-      position: { x: 20, y: 85 },
+      position: { x: 120, y: 70 },
       data: { label: 'Seller accepts commitment details' },
       parentId: 'cwflume-container',
       extent: 'parent',
@@ -225,7 +225,7 @@ const WorkflowDiagram = () => {
     {
       id: 'cwflume-accept',
       type: 'action',
-      position: { x: 30, y: 110 },
+      position: { x: 30, y: 100 },
       data: { label: 'Accept', icon: '✓' },
       parentId: 'cwflume-container',
       extent: 'parent',
@@ -233,7 +233,7 @@ const WorkflowDiagram = () => {
     {
       id: 'cwflume-stage-step',
       type: 'step',
-      position: { x: 200, y: 110 },
+      position: { x: 200, y: 100 },
       data: { label: 'Stage', icon: '3' },
       parentId: 'cwflume-container',
       extent: 'parent',
@@ -241,7 +241,7 @@ const WorkflowDiagram = () => {
     {
       id: 'cwflume-accepted',
       type: 'workflow',
-      position: { x: 25, y: 140 },
+      position: { x: 25, y: 130 },
       data: { label: 'accepted', status: 'accepted' },
       parentId: 'cwflume-container',
       extent: 'parent',
@@ -249,7 +249,7 @@ const WorkflowDiagram = () => {
     {
       id: 'cwflume-staged',
       type: 'workflow',
-      position: { x: 200, y: 140 },
+      position: { x: 200, y: 130 },
       data: { label: 'staged', status: 'staged' },
       parentId: 'cwflume-container',
       extent: 'parent',
