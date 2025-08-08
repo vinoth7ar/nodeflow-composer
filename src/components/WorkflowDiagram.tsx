@@ -15,7 +15,7 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
-// Custom Node Components
+// Unified Node Components
 const WorkflowContainerNode = ({ data }: { data: any }) => (
   <div className="workflow-container-inner" style={{ 
     width: data.width, 
