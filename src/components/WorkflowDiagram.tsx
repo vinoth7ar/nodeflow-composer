@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   ReactFlow,
   Background,
@@ -72,243 +72,306 @@ const nodeTypes: NodeTypes = {
   step: StepNode,
 };
 
+// Data structures for backend integration
+interface SubNode {
+  id: string;
+  label: string;
+}
+
+interface EventNode {
+  id: string;
+  label: string;
+  status: string;
+}
+
+interface StatusNode {
+  id: string;
+  label: string;
+  icon: string;
+}
+
+interface ApplicationNode {
+  id: string;
+  label: string;
+  position: { x: number; y: number };
+  subNodes: SubNode[];
+  events: EventNode[];
+  statusNodes: StatusNode[];
+  descriptiveTexts?: { id: string; label: string }[];
+}
+
+interface WorkflowConnection {
+  id: string;
+  source: string;
+  target: string;
+  style?: 'action' | 'default';
+}
+
+interface WorkflowData {
+  applications: ApplicationNode[];
+  connections: WorkflowConnection[];
+}
+
 const WorkflowDiagram = () => {
-  // Calculate dynamic positions to avoid overlaps
+  // Container configuration
   const containerWidth = 350;
   const containerHeight = 200;
-  const nodeSpacing = 120;
-  const verticalSpacing = 80;
+  
+  // Layout configuration
+  const layoutConfig = {
+    subNodeY: 70,
+    statusNodeY: 100,
+    eventNodeY: 130,
+    subNodeStartX: 20,
+    descriptiveTextX: 120,
+    statusNodeStartX: 30,
+    statusNodeSpacing: 110,
+    eventNodeStartX: 25,
+    eventNodeSpacing: 175,
+  };
 
-  const initialNodes: Node[] = useMemo(() => [
-    // LSA Container
-    {
-      id: 'lsa-container',
-      type: 'container',
-      position: { x: 50, y: 50 },
-      data: { 
+  // TODO: Replace with actual backend API call
+  const fetchWorkflowData = async (): Promise<WorkflowData> => {
+    // Placeholder for backend integration
+    // return await api.get('/workflow-data');
+    
+    // Demo data - hardcoded for now
+    return {
+      applications: [
+        {
+          id: 'lsa',
+          label: 'LSA',
+          position: { x: 50, y: 50 },
+          subNodes: [
+            { id: 'commitment', label: 'Commitment' }
+          ],
+          descriptiveTexts: [
+            { id: 'accept-desc', label: 'Seller accepts commitment details' }
+          ],
+          statusNodes: [
+            { id: 'create', label: 'Create', icon: '1' },
+            { id: 'accept', label: 'Accept', icon: '✓' }
+          ],
+          events: [
+            { id: 'created', label: 'created', status: 'created' },
+            { id: 'accepted', label: 'accepted', status: 'accepted' }
+          ]
+        },
+        {
+          id: 'cwpmf',
+          label: 'CW/PMF',
+          position: { x: 450, y: 50 },
+          subNodes: [
+            { id: 'hypo-loan', label: 'Hypo Loan F' }
+          ],
+          statusNodes: [
+            { id: 'stage', label: 'Stage', icon: '3' }
+          ],
+          events: []
+        },
+        {
+          id: 'cwflume',
+          label: 'CW/FLUME',
+          position: { x: 250, y: 300 },
+          subNodes: [
+            { id: 'commitment', label: 'Commitment' }
+          ],
+          descriptiveTexts: [
+            { id: 'accept-desc', label: 'Seller accepts commitment details' }
+          ],
+          statusNodes: [
+            { id: 'accept', label: 'Accept', icon: '✓' },
+            { id: 'stage', label: 'Stage', icon: '3' }
+          ],
+          events: [
+            { id: 'accepted', label: 'accepted', status: 'accepted' },
+            { id: 'staged', label: 'staged', status: 'staged' }
+          ]
+        }
+      ],
+      connections: [
+        { id: 'lsa-create-to-created', source: 'lsa-create', target: 'lsa-created' },
+        { id: 'lsa-created-to-accept', source: 'lsa-created', target: 'lsa-accept' },
+        { id: 'lsa-accept-to-accepted', source: 'lsa-accept', target: 'lsa-accepted', style: 'action' },
+        { id: 'cwflume-accept-to-accepted', source: 'cwflume-accept', target: 'cwflume-accepted', style: 'action' },
+        { id: 'cwflume-accepted-to-stage', source: 'cwflume-accepted', target: 'cwflume-stage' },
+        { id: 'cwflume-stage-to-staged', source: 'cwflume-stage', target: 'cwflume-staged' }
+      ]
+    };
+  };
+
+  // Generate ReactFlow nodes from workflow data
+  const generateNodes = (workflowData: WorkflowData): Node[] => {
+    const nodes: Node[] = [];
+
+    workflowData.applications.forEach((app) => {
+      // Create application container
+      nodes.push({
+        id: `${app.id}-container`,
+        type: 'container',
+        position: app.position,
+        data: { 
+          label: app.label,
+          width: containerWidth,
+          height: containerHeight
+        },
+        style: { 
+          width: containerWidth, 
+          height: containerHeight,
+          zIndex: 0
+        },
+        selectable: false,
+        draggable: false,
+      });
+
+      // Create sub nodes
+      app.subNodes.forEach((subNode, index) => {
+        nodes.push({
+          id: `${app.id}-${subNode.id}`,
+          type: 'text',
+          position: { 
+            x: layoutConfig.subNodeStartX + (index * 100), 
+            y: layoutConfig.subNodeY 
+          },
+          data: { label: subNode.label },
+          parentId: `${app.id}-container`,
+          extent: 'parent',
+        });
+      });
+
+      // Create descriptive texts
+      app.descriptiveTexts?.forEach((text, index) => {
+        nodes.push({
+          id: `${app.id}-${text.id}`,
+          type: 'text',
+          position: { 
+            x: layoutConfig.descriptiveTextX + (index * 100), 
+            y: layoutConfig.subNodeY 
+          },
+          data: { label: text.label },
+          parentId: `${app.id}-container`,
+          extent: 'parent',
+        });
+      });
+
+      // Create status nodes
+      app.statusNodes.forEach((statusNode, index) => {
+        const nodeType = statusNode.label.toLowerCase() === 'create' ? 'step' : 'action';
+        nodes.push({
+          id: `${app.id}-${statusNode.id}`,
+          type: nodeType,
+          position: { 
+            x: layoutConfig.statusNodeStartX + (index * layoutConfig.statusNodeSpacing), 
+            y: layoutConfig.statusNodeY 
+          },
+          data: { label: statusNode.label, icon: statusNode.icon },
+          parentId: `${app.id}-container`,
+          extent: 'parent',
+        });
+      });
+
+      // Create event nodes
+      app.events.forEach((event, index) => {
+        nodes.push({
+          id: `${app.id}-${event.id}`,
+          type: 'workflow',
+          position: { 
+            x: layoutConfig.eventNodeStartX + (index * layoutConfig.eventNodeSpacing), 
+            y: layoutConfig.eventNodeY 
+          },
+          data: { label: event.label, status: event.status },
+          parentId: `${app.id}-container`,
+          extent: 'parent',
+        });
+      });
+    });
+
+    return nodes;
+  };
+
+  // Generate ReactFlow edges from workflow data
+  const generateEdges = (workflowData: WorkflowData): Edge[] => {
+    return workflowData.connections.map(connection => ({
+      id: connection.id,
+      source: connection.source,
+      target: connection.target,
+      type: 'smoothstep',
+      style: { 
+        stroke: connection.style === 'action' 
+          ? 'hsl(var(--workflow-action))' 
+          : 'hsl(var(--border))', 
+        strokeWidth: 2 
+      },
+      animated: false,
+    }));
+  };
+
+  // Demo data - in real app this would come from fetchWorkflowData()
+  const workflowData: WorkflowData = useMemo(() => ({
+    applications: [
+      {
+        id: 'lsa',
         label: 'LSA',
-        width: containerWidth,
-        height: containerHeight
+        position: { x: 50, y: 50 },
+        subNodes: [
+          { id: 'commitment', label: 'Commitment' }
+        ],
+        descriptiveTexts: [
+          { id: 'accept-desc', label: 'Seller accepts commitment details' }
+        ],
+        statusNodes: [
+          { id: 'create', label: 'Create', icon: '1' },
+          { id: 'accept', label: 'Accept', icon: '✓' }
+        ],
+        events: [
+          { id: 'created', label: 'created', status: 'created' },
+          { id: 'accepted', label: 'accepted', status: 'accepted' }
+        ]
       },
-      style: { 
-        width: containerWidth, 
-        height: containerHeight,
-        zIndex: 0
-      },
-      selectable: false,
-      draggable: false,
-    },
-
-    // LSA Workflow nodes - aligned by type
-    {
-      id: 'lsa-commitment-label',
-      type: 'text',
-      position: { x: 20, y: 70 },
-      data: { label: 'Commitment' },
-      parentId: 'lsa-container',
-      extent: 'parent',
-    },
-    {
-      id: 'lsa-accept-text',
-      type: 'text',
-      position: { x: 120, y: 70 },
-      data: { label: 'Seller accepts commitment details' },
-      parentId: 'lsa-container',
-      extent: 'parent',
-    },
-    {
-      id: 'lsa-create-step',
-      type: 'step',
-      position: { x: 30, y: 100 },
-      data: { label: 'Create', icon: '1' },
-      parentId: 'lsa-container',
-      extent: 'parent',
-    },
-    {
-      id: 'lsa-accept',
-      type: 'action',
-      position: { x: 140, y: 100 },
-      data: { label: 'Accept', icon: '✓' },
-      parentId: 'lsa-container',
-      extent: 'parent',
-    },
-    {
-      id: 'lsa-created',
-      type: 'workflow',
-      position: { x: 25, y: 130 },
-      data: { label: 'created', status: 'created' },
-      parentId: 'lsa-container',
-      extent: 'parent',
-    },
-    {
-      id: 'lsa-accepted',
-      type: 'workflow',
-      position: { x: 255, y: 130 },
-      data: { label: 'accepted', status: 'accepted' },
-      parentId: 'lsa-container',
-      extent: 'parent',
-    },
-
-    // CW/PMF Container
-    {
-      id: 'cwpmf-container',
-      type: 'container',
-      position: { x: 450, y: 50 },
-      data: { 
+      {
+        id: 'cwpmf',
         label: 'CW/PMF',
-        width: containerWidth,
-        height: containerHeight
+        position: { x: 450, y: 50 },
+        subNodes: [
+          { id: 'hypo-loan', label: 'Hypo Loan F' }
+        ],
+        statusNodes: [
+          { id: 'stage', label: 'Stage', icon: '3' }
+        ],
+        events: []
       },
-      style: { 
-        width: containerWidth, 
-        height: containerHeight,
-        zIndex: 0
-      },
-      selectable: false,
-      draggable: false,
-    },
-
-    // CW/PMF content - aligned by type
-    {
-      id: 'cwpmf-hypo-label',
-      type: 'text',
-      position: { x: 20, y: 70 },
-      data: { label: 'Hypo Loan F' },
-      parentId: 'cwpmf-container',
-      extent: 'parent',
-    },
-    {
-      id: 'cwpmf-stage-step',
-      type: 'step',
-      position: { x: 30, y: 100 },
-      data: { label: 'Stage', icon: '3' },
-      parentId: 'cwpmf-container',
-      extent: 'parent',
-    },
-
-    // CW/FLUME Container
-    {
-      id: 'cwflume-container',
-      type: 'container',
-      position: { x: 250, y: 300 },
-      data: { 
+      {
+        id: 'cwflume',
         label: 'CW/FLUME',
-        width: containerWidth,
-        height: containerHeight
-      },
-      style: { 
-        width: containerWidth, 
-        height: containerHeight,
-        zIndex: 0
-      },
-      selectable: false,
-      draggable: false,
-    },
+        position: { x: 250, y: 300 },
+        subNodes: [
+          { id: 'commitment', label: 'Commitment' }
+        ],
+        descriptiveTexts: [
+          { id: 'accept-desc', label: 'Seller accepts commitment details' }
+        ],
+        statusNodes: [
+          { id: 'accept', label: 'Accept', icon: '✓' },
+          { id: 'stage', label: 'Stage', icon: '3' }
+        ],
+        events: [
+          { id: 'accepted', label: 'accepted', status: 'accepted' },
+          { id: 'staged', label: 'staged', status: 'staged' }
+        ]
+      }
+    ],
+    connections: [
+      { id: 'lsa-create-to-created', source: 'lsa-create', target: 'lsa-created' },
+      { id: 'lsa-created-to-accept', source: 'lsa-created', target: 'lsa-accept' },
+      { id: 'lsa-accept-to-accepted', source: 'lsa-accept', target: 'lsa-accepted', style: 'action' },
+      { id: 'cwflume-accept-to-accepted', source: 'cwflume-accept', target: 'cwflume-accepted', style: 'action' },
+      { id: 'cwflume-accepted-to-stage', source: 'cwflume-accepted', target: 'cwflume-stage' },
+      { id: 'cwflume-stage-to-staged', source: 'cwflume-stage', target: 'cwflume-staged' }
+    ]
+  }), []);
 
-    // CW/FLUME Workflow nodes - aligned by type to match LSA
-    {
-      id: 'cwflume-commitment-label',
-      type: 'text',
-      position: { x: 20, y: 70 },
-      data: { label: 'Commitment' },
-      parentId: 'cwflume-container',
-      extent: 'parent',
-    },
-    {
-      id: 'cwflume-accept-text',
-      type: 'text',
-      position: { x: 120, y: 70 },
-      data: { label: 'Seller accepts commitment details' },
-      parentId: 'cwflume-container',
-      extent: 'parent',
-    },
-    {
-      id: 'cwflume-accept',
-      type: 'action',
-      position: { x: 30, y: 100 },
-      data: { label: 'Accept', icon: '✓' },
-      parentId: 'cwflume-container',
-      extent: 'parent',
-    },
-    {
-      id: 'cwflume-stage-step',
-      type: 'step',
-      position: { x: 200, y: 100 },
-      data: { label: 'Stage', icon: '3' },
-      parentId: 'cwflume-container',
-      extent: 'parent',
-    },
-    {
-      id: 'cwflume-accepted',
-      type: 'workflow',
-      position: { x: 25, y: 130 },
-      data: { label: 'accepted', status: 'accepted' },
-      parentId: 'cwflume-container',
-      extent: 'parent',
-    },
-    {
-      id: 'cwflume-staged',
-      type: 'workflow',
-      position: { x: 200, y: 130 },
-      data: { label: 'staged', status: 'staged' },
-      parentId: 'cwflume-container',
-      extent: 'parent',
-    },
-  ], []);
-
-  const initialEdges: Edge[] = useMemo(() => [
-    // LSA workflow connections
-    {
-      id: 'lsa-create-to-created',
-      source: 'lsa-create-step',
-      target: 'lsa-created',
-      type: 'smoothstep',
-      style: { stroke: 'hsl(var(--border))', strokeWidth: 2 },
-      animated: false,
-    },
-    {
-      id: 'lsa-created-to-accept',
-      source: 'lsa-created',
-      target: 'lsa-accept',
-      type: 'smoothstep',
-      style: { stroke: 'hsl(var(--border))', strokeWidth: 2 },
-      animated: false,
-    },
-    {
-      id: 'lsa-accept-to-accepted',
-      source: 'lsa-accept',
-      target: 'lsa-accepted',
-      type: 'smoothstep',
-      style: { stroke: 'hsl(var(--workflow-action))', strokeWidth: 2 },
-      animated: false,
-    },
-
-    // CW/FLUME workflow connections
-    {
-      id: 'cwflume-accept-to-accepted',
-      source: 'cwflume-accept',
-      target: 'cwflume-accepted',
-      type: 'smoothstep',
-      style: { stroke: 'hsl(var(--workflow-action))', strokeWidth: 2 },
-      animated: false,
-    },
-    {
-      id: 'cwflume-accepted-to-stage',
-      source: 'cwflume-accepted',
-      target: 'cwflume-stage-step',
-      type: 'smoothstep',
-      style: { stroke: 'hsl(var(--border))', strokeWidth: 2 },
-      animated: false,
-    },
-    {
-      id: 'cwflume-stage-to-staged',
-      source: 'cwflume-stage-step',
-      target: 'cwflume-staged',
-      type: 'smoothstep',
-      style: { stroke: 'hsl(var(--border))', strokeWidth: 2 },
-      animated: false,
-    },
-  ], []);
+  const initialNodes: Node[] = useMemo(() => generateNodes(workflowData), [workflowData]);
+  const initialEdges: Edge[] = useMemo(() => generateEdges(workflowData), [workflowData]);
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
