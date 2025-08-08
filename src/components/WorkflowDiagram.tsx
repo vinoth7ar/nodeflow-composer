@@ -683,7 +683,7 @@ const WorkflowDiagram = () => {
   );
 
   return (
-    <div className="w-full h-screen">
+    <div className="app-container">
       <ReactFlow
         nodes={nodes}
         edges={edges}
