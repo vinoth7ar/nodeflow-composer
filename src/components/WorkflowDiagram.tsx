@@ -91,13 +91,13 @@ interface SubNode {
   label: string;
 }
 
-interface StatusNode {
+interface EventNode {
   id: string;
   label: string;
   status: string;
 }
 
-interface EventNode {
+interface StatusNode {
   id: string;
   label: string;
   icon: string;
@@ -106,9 +106,10 @@ interface EventNode {
 interface ApplicationNode {
   id: string;
   label: string;
+  position: { x: number; y: number };
   subNodes: SubNode[];
+  events: EventNode[];
   statusNodes: StatusNode[];
-  eventNodes: EventNode[];
   descriptiveTexts?: { id: string; label: string }[];
 }
 
@@ -131,21 +132,12 @@ const WorkflowDiagram = () => {
   const workflowContainerWidth = 300;
   const workflowContainerHeight = 100;
   
-  // Dynamic positioning configuration
-  const gridConfig = {
-    cols: 4,              // 4 columns per row
-    containerSpacingX: 400, // Horizontal spacing between containers
-    containerSpacingY: 250, // Vertical spacing between rows
-    startX: 50,           // Starting X position
-    startY: 50,           // Starting Y position
-  };
-  
   // Layout configuration to match Figma design
   const layoutConfig = {
     subNodeY: 70,
     workflowContainerY: 90,  // Position of workflow container
-    statusNodeY: 50,         // Relative to workflow container (swapped)
-    eventNodeY: 20,          // Relative to workflow container (swapped)
+    statusNodeY: 20,         // Relative to workflow container
+    eventNodeY: 50,          // Relative to workflow container
     subNodeStartX: 20,
     descriptiveTextX: 120,
     workflowContainerX: 25,  // Position of workflow container
@@ -154,40 +146,29 @@ const WorkflowDiagram = () => {
     statusNodeOffsetX: 60,   // Offset to center status nodes between events
   };
 
-  // Dynamic position calculation function
-  const calculatePosition = (index: number) => {
-    const row = Math.floor(index / gridConfig.cols);
-    const col = index % gridConfig.cols;
-    
-    return {
-      x: gridConfig.startX + (col * gridConfig.containerSpacingX),
-      y: gridConfig.startY + (row * gridConfig.containerSpacingY)
-    };
-  };
-
   // TODO: Replace with actual backend API call
   const fetchWorkflowData = async (): Promise<WorkflowData> => {
     // Placeholder for backend integration
     // return await api.get('/workflow-data');
     
     // Demo data - 8 applications representing complete loan workflow
-    // Note: No hardcoded positions - they will be calculated dynamically
     return {
       applications: [
         {
           id: 'lsa',
           label: 'LSA',
+          position: { x: 50, y: 50 },
           subNodes: [
             { id: 'commitment', label: 'Commitment' }
           ],
           descriptiveTexts: [
             { id: 'accept-desc', label: 'Seller accepts commitment details' }
           ],
-          eventNodes: [
+          statusNodes: [
             { id: 'create', label: 'Create', icon: '1' },
             { id: 'accept', label: 'Accept', icon: '✓' }
           ],
-          statusNodes: [
+          events: [
             { id: 'created', label: 'created', status: 'created' },
             { id: 'accepted', label: 'accepted', status: 'accepted' }
           ]
@@ -195,17 +176,18 @@ const WorkflowDiagram = () => {
         {
           id: 'los',
           label: 'LOS',
+          position: { x: 450, y: 50 },
           subNodes: [
             { id: 'application', label: 'Application' }
           ],
           descriptiveTexts: [
             { id: 'submit-desc', label: 'Borrower submits loan application' }
           ],
-          eventNodes: [
+          statusNodes: [
             { id: 'submit', label: 'Submit', icon: '2' },
             { id: 'validate', label: 'Validate', icon: '✓' }
           ],
-          statusNodes: [
+          events: [
             { id: 'submitted', label: 'submitted', status: 'submitted' },
             { id: 'validated', label: 'validated', status: 'validated' }
           ]
@@ -213,17 +195,18 @@ const WorkflowDiagram = () => {
         {
           id: 'credit',
           label: 'Credit Bureau',
+          position: { x: 850, y: 50 },
           subNodes: [
             { id: 'credit-check', label: 'Credit Check' }
           ],
           descriptiveTexts: [
             { id: 'pull-desc', label: 'Pull credit report and score' }
           ],
-          eventNodes: [
+          statusNodes: [
             { id: 'pull', label: 'Pull', icon: '3' },
             { id: 'analyze', label: 'Analyze', icon: '✓' }
           ],
-          statusNodes: [
+          events: [
             { id: 'pulled', label: 'pulled', status: 'pulled' },
             { id: 'analyzed', label: 'analyzed', status: 'analyzed' }
           ]
@@ -231,17 +214,18 @@ const WorkflowDiagram = () => {
         {
           id: 'dms',
           label: 'Document Mgmt',
+          position: { x: 1250, y: 50 },
           subNodes: [
             { id: 'documents', label: 'Documents' }
           ],
           descriptiveTexts: [
             { id: 'collect-desc', label: 'Collect required documents' }
           ],
-          eventNodes: [
+          statusNodes: [
             { id: 'collect', label: 'Collect', icon: '4' },
             { id: 'verify', label: 'Verify', icon: '✓' }
           ],
-          statusNodes: [
+          events: [
             { id: 'collected', label: 'collected', status: 'collected' },
             { id: 'verified', label: 'verified', status: 'verified' }
           ]
@@ -249,17 +233,18 @@ const WorkflowDiagram = () => {
         {
           id: 'underwriting',
           label: 'Underwriting',
+          position: { x: 50, y: 300 },
           subNodes: [
             { id: 'risk-assessment', label: 'Risk Assessment' }
           ],
           descriptiveTexts: [
             { id: 'review-desc', label: 'Review loan application risk' }
           ],
-          eventNodes: [
+          statusNodes: [
             { id: 'review', label: 'Review', icon: '5' },
             { id: 'approve', label: 'Approve', icon: '✓' }
           ],
-          statusNodes: [
+          events: [
             { id: 'reviewed', label: 'reviewed', status: 'reviewed' },
             { id: 'approved', label: 'approved', status: 'approved' }
           ]
@@ -267,30 +252,32 @@ const WorkflowDiagram = () => {
         {
           id: 'cwpmf',
           label: 'CW/PMF',
+          position: { x: 450, y: 300 },
           subNodes: [
             { id: 'hypo-loan', label: 'Hypo Loan F' }
           ],
-          eventNodes: [
+          statusNodes: [
             { id: 'stage', label: 'Stage', icon: '6' }
           ],
-          statusNodes: [
+          events: [
             { id: 'staged', label: 'staged', status: 'staged' }
           ]
         },
         {
           id: 'cwflume',
           label: 'CW/FLUME',
+          position: { x: 850, y: 300 },
           subNodes: [
             { id: 'commitment', label: 'Commitment' }
           ],
           descriptiveTexts: [
             { id: 'accept-desc', label: 'Seller accepts commitment details' }
           ],
-          eventNodes: [
+          statusNodes: [
             { id: 'accept', label: 'Accept', icon: '✓' },
             { id: 'finalize', label: 'Finalize', icon: '7' }
           ],
-          statusNodes: [
+          events: [
             { id: 'accepted', label: 'accepted', status: 'accepted' },
             { id: 'finalized', label: 'finalized', status: 'finalized' }
           ]
@@ -298,17 +285,18 @@ const WorkflowDiagram = () => {
         {
           id: 'closing',
           label: 'Closing System',
+          position: { x: 1250, y: 300 },
           subNodes: [
             { id: 'settlement', label: 'Settlement' }
           ],
           descriptiveTexts: [
             { id: 'close-desc', label: 'Complete loan closing process' }
           ],
-          eventNodes: [
+          statusNodes: [
             { id: 'prepare', label: 'Prepare', icon: '8' },
             { id: 'close', label: 'Close', icon: '✓' }
           ],
-          statusNodes: [
+          events: [
             { id: 'prepared', label: 'prepared', status: 'prepared' },
             { id: 'closed', label: 'closed', status: 'closed' }
           ]
@@ -372,15 +360,12 @@ const WorkflowDiagram = () => {
   const generateNodes = (workflowData: WorkflowData): Node[] => {
     const nodes: Node[] = [];
 
-    workflowData.applications.forEach((app, index) => {
-      // Calculate dynamic position based on index
-      const position = calculatePosition(index);
-      
+    workflowData.applications.forEach((app) => {
       // Create application container
       nodes.push({
         id: `${app.id}-container`,
         type: 'container',
-        position: position,
+        position: app.position,
         data: { 
           label: app.label,
           width: containerWidth,
@@ -425,8 +410,8 @@ const WorkflowDiagram = () => {
         });
       });
 
-      // Create workflow container only if app has eventNodes or statusNodes
-      if (app.eventNodes.length > 0 || app.statusNodes.length > 0) {
+      // Create workflow container only if app has events or status nodes
+      if (app.events.length > 0 || app.statusNodes.length > 0) {
         nodes.push({
           id: `${app.id}-workflow-container`,
           type: 'workflowContainer',
@@ -451,34 +436,34 @@ const WorkflowDiagram = () => {
         });
       }
 
-      // Create event nodes (formerly status nodes) - positioned inside workflow container
-      app.eventNodes.forEach((eventNode, index) => {
-        const nodeType = eventNode.label.toLowerCase() === 'create' ? 'step' : 'action';
+      // Create status nodes - positioned inside workflow container
+      app.statusNodes.forEach((statusNode, index) => {
+        const nodeType = statusNode.label.toLowerCase() === 'create' ? 'step' : 'action';
         const xPosition = layoutConfig.eventNodeStartX + layoutConfig.statusNodeOffsetX + (index * layoutConfig.eventNodeSpacing);
         
         nodes.push({
-          id: `${app.id}-${eventNode.id}`,
+          id: `${app.id}-${statusNode.id}`,
           type: nodeType,
           position: { 
             x: xPosition, 
-            y: layoutConfig.eventNodeY 
+            y: layoutConfig.statusNodeY 
           },
-          data: { label: eventNode.label, icon: eventNode.icon },
+          data: { label: statusNode.label, icon: statusNode.icon },
           parentId: `${app.id}-workflow-container`,
           extent: 'parent',
         });
       });
 
-      // Create status nodes (formerly events) - positioned inside workflow container
-      app.statusNodes.forEach((statusNode, index) => {
+      // Create event nodes - positioned inside workflow container
+      app.events.forEach((event, index) => {
         nodes.push({
-          id: `${app.id}-${statusNode.id}`,
+          id: `${app.id}-${event.id}`,
           type: 'workflow',
           position: { 
             x: layoutConfig.eventNodeStartX + (index * layoutConfig.eventNodeSpacing), 
-            y: layoutConfig.statusNodeY 
+            y: layoutConfig.eventNodeY 
           },
-          data: { label: statusNode.label, status: statusNode.status },
+          data: { label: event.label, status: event.status },
           parentId: `${app.id}-workflow-container`,
           extent: 'parent',
         });
@@ -514,17 +499,18 @@ const WorkflowDiagram = () => {
         {
           id: 'lsa',
           label: 'LSA',
+          position: { x: 50, y: 50 },  // Top row - position 1
           subNodes: [
             { id: 'commitment', label: 'Commitment' }
           ],
           descriptiveTexts: [
             { id: 'accept-desc', label: 'Seller accepts commitment details' }
           ],
-          eventNodes: [
+          statusNodes: [
             { id: 'create', label: 'Create', icon: '1' },
             { id: 'accept', label: 'Accept', icon: '✓' }
           ],
-          statusNodes: [
+          events: [
             { id: 'created', label: 'created', status: 'created' },
             { id: 'accepted', label: 'accepted', status: 'accepted' }
           ]
@@ -532,17 +518,18 @@ const WorkflowDiagram = () => {
         {
           id: 'los',
           label: 'LOS',
+          position: { x: 450, y: 300 },  // Bottom row - position 2
           subNodes: [
             { id: 'application', label: 'Application' }
           ],
           descriptiveTexts: [
             { id: 'submit-desc', label: 'Borrower submits loan application' }
           ],
-          eventNodes: [
+          statusNodes: [
             { id: 'submit', label: 'Submit', icon: '2' },
             { id: 'validate', label: 'Validate', icon: '✓' }
           ],
-          statusNodes: [
+          events: [
             { id: 'submitted', label: 'submitted', status: 'submitted' },
             { id: 'validated', label: 'validated', status: 'validated' }
           ]
@@ -550,17 +537,18 @@ const WorkflowDiagram = () => {
         {
           id: 'credit',
           label: 'Credit Bureau',
+          position: { x: 850, y: 50 },  // Top row - position 3
           subNodes: [
             { id: 'credit-check', label: 'Credit Check' }
           ],
           descriptiveTexts: [
             { id: 'pull-desc', label: 'Pull credit report and score' }
           ],
-          eventNodes: [
+          statusNodes: [
             { id: 'pull', label: 'Pull', icon: '3' },
             { id: 'analyze', label: 'Analyze', icon: '✓' }
           ],
-          statusNodes: [
+          events: [
             { id: 'pulled', label: 'pulled', status: 'pulled' },
             { id: 'analyzed', label: 'analyzed', status: 'analyzed' }
           ]
@@ -568,17 +556,18 @@ const WorkflowDiagram = () => {
         {
           id: 'dms',
           label: 'Document Mgmt',
+          position: { x: 1250, y: 300 },  // Bottom row - position 4
           subNodes: [
             { id: 'documents', label: 'Documents' }
           ],
           descriptiveTexts: [
             { id: 'collect-desc', label: 'Collect required documents' }
           ],
-          eventNodes: [
+          statusNodes: [
             { id: 'collect', label: 'Collect', icon: '4' },
             { id: 'verify', label: 'Verify', icon: '✓' }
           ],
-          statusNodes: [
+          events: [
             { id: 'collected', label: 'collected', status: 'collected' },
             { id: 'verified', label: 'verified', status: 'verified' }
           ]
@@ -586,17 +575,18 @@ const WorkflowDiagram = () => {
         {
           id: 'underwriting',
           label: 'Underwriting',
+          position: { x: 1650, y: 50 },  // Top row - position 5
           subNodes: [
             { id: 'risk-assessment', label: 'Risk Assessment' }
           ],
           descriptiveTexts: [
             { id: 'review-desc', label: 'Review loan application risk' }
           ],
-          eventNodes: [
+          statusNodes: [
             { id: 'review', label: 'Review', icon: '5' },
             { id: 'approve', label: 'Approve', icon: '✓' }
           ],
-          statusNodes: [
+          events: [
             { id: 'reviewed', label: 'reviewed', status: 'reviewed' },
             { id: 'approved', label: 'approved', status: 'approved' }
           ]
@@ -604,30 +594,32 @@ const WorkflowDiagram = () => {
         {
           id: 'cwpmf',
           label: 'CW/PMF',
+          position: { x: 2050, y: 300 },  // Bottom row - position 6
           subNodes: [
             { id: 'hypo-loan', label: 'Hypo Loan F' }
           ],
-          eventNodes: [
+          statusNodes: [
             { id: 'stage', label: 'Stage', icon: '6' }
           ],
-          statusNodes: [
+          events: [
             { id: 'staged', label: 'staged', status: 'staged' }
           ]
         },
         {
           id: 'cwflume',
           label: 'CW/FLUME',
+          position: { x: 2450, y: 50 },  // Top row - position 7
           subNodes: [
             { id: 'commitment', label: 'Commitment' }
           ],
           descriptiveTexts: [
             { id: 'accept-desc', label: 'Seller accepts commitment details' }
           ],
-          eventNodes: [
+          statusNodes: [
             { id: 'accept', label: 'Accept', icon: '✓' },
             { id: 'finalize', label: 'Finalize', icon: '7' }
           ],
-          statusNodes: [
+          events: [
             { id: 'accepted', label: 'accepted', status: 'accepted' },
             { id: 'finalized', label: 'finalized', status: 'finalized' }
           ]
@@ -635,17 +627,18 @@ const WorkflowDiagram = () => {
         {
           id: 'closing',
           label: 'Closing System',
+          position: { x: 2850, y: 300 },  // Bottom row - position 8
           subNodes: [
             { id: 'settlement', label: 'Settlement' }
           ],
           descriptiveTexts: [
             { id: 'close-desc', label: 'Complete loan closing process' }
           ],
-          eventNodes: [
+          statusNodes: [
             { id: 'prepare', label: 'Prepare', icon: '8' },
             { id: 'close', label: 'Close', icon: '✓' }
           ],
-          statusNodes: [
+          events: [
             { id: 'prepared', label: 'prepared', status: 'prepared' },
             { id: 'closed', label: 'closed', status: 'closed' }
           ]
