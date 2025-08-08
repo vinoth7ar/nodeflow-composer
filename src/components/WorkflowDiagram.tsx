@@ -361,9 +361,15 @@ const WorkflowDiagram = () => {
       }
     ],
     connections: [
+      // LSA workflow: status -> event -> status -> event
       { id: 'lsa-create-to-created', source: 'lsa-create', target: 'lsa-created' },
       { id: 'lsa-created-to-accept', source: 'lsa-created', target: 'lsa-accept' },
       { id: 'lsa-accept-to-accepted', source: 'lsa-accept', target: 'lsa-accepted', style: 'action' },
+      
+      // Cross-application connection: LSA created event -> CW/FLUME accept status
+      { id: 'lsa-created-to-cwflume-accept', source: 'lsa-created', target: 'cwflume-accept', style: 'action' },
+      
+      // CW/FLUME workflow: status -> event -> status -> event
       { id: 'cwflume-accept-to-accepted', source: 'cwflume-accept', target: 'cwflume-accepted', style: 'action' },
       { id: 'cwflume-accepted-to-stage', source: 'cwflume-accepted', target: 'cwflume-stage' },
       { id: 'cwflume-stage-to-staged', source: 'cwflume-stage', target: 'cwflume-staged' }
