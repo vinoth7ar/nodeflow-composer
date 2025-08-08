@@ -106,7 +106,6 @@ interface StatusNode {
 interface ApplicationNode {
   id: string;
   label: string;
-  position: { x: number; y: number };
   subNodes: SubNode[];
   events: EventNode[];
   statusNodes: StatusNode[];
@@ -132,6 +131,15 @@ const WorkflowDiagram = () => {
   const workflowContainerWidth = 300;
   const workflowContainerHeight = 100;
   
+  // Dynamic positioning configuration
+  const gridConfig = {
+    cols: 4,              // 4 columns per row
+    containerSpacingX: 400, // Horizontal spacing between containers
+    containerSpacingY: 250, // Vertical spacing between rows
+    startX: 50,           // Starting X position
+    startY: 50,           // Starting Y position
+  };
+  
   // Layout configuration to match Figma design
   const layoutConfig = {
     subNodeY: 70,
@@ -146,18 +154,29 @@ const WorkflowDiagram = () => {
     statusNodeOffsetX: 60,   // Offset to center status nodes between events
   };
 
+  // Dynamic position calculation function
+  const calculatePosition = (index: number) => {
+    const row = Math.floor(index / gridConfig.cols);
+    const col = index % gridConfig.cols;
+    
+    return {
+      x: gridConfig.startX + (col * gridConfig.containerSpacingX),
+      y: gridConfig.startY + (row * gridConfig.containerSpacingY)
+    };
+  };
+
   // TODO: Replace with actual backend API call
   const fetchWorkflowData = async (): Promise<WorkflowData> => {
     // Placeholder for backend integration
     // return await api.get('/workflow-data');
     
     // Demo data - 8 applications representing complete loan workflow
+    // Note: No hardcoded positions - they will be calculated dynamically
     return {
       applications: [
         {
           id: 'lsa',
           label: 'LSA',
-          position: { x: 50, y: 50 },
           subNodes: [
             { id: 'commitment', label: 'Commitment' }
           ],
@@ -176,7 +195,6 @@ const WorkflowDiagram = () => {
         {
           id: 'los',
           label: 'LOS',
-          position: { x: 450, y: 50 },
           subNodes: [
             { id: 'application', label: 'Application' }
           ],
@@ -195,7 +213,6 @@ const WorkflowDiagram = () => {
         {
           id: 'credit',
           label: 'Credit Bureau',
-          position: { x: 850, y: 50 },
           subNodes: [
             { id: 'credit-check', label: 'Credit Check' }
           ],
@@ -214,7 +231,6 @@ const WorkflowDiagram = () => {
         {
           id: 'dms',
           label: 'Document Mgmt',
-          position: { x: 1250, y: 50 },
           subNodes: [
             { id: 'documents', label: 'Documents' }
           ],
@@ -233,7 +249,6 @@ const WorkflowDiagram = () => {
         {
           id: 'underwriting',
           label: 'Underwriting',
-          position: { x: 50, y: 300 },
           subNodes: [
             { id: 'risk-assessment', label: 'Risk Assessment' }
           ],
@@ -252,7 +267,6 @@ const WorkflowDiagram = () => {
         {
           id: 'cwpmf',
           label: 'CW/PMF',
-          position: { x: 450, y: 300 },
           subNodes: [
             { id: 'hypo-loan', label: 'Hypo Loan F' }
           ],
@@ -266,7 +280,6 @@ const WorkflowDiagram = () => {
         {
           id: 'cwflume',
           label: 'CW/FLUME',
-          position: { x: 850, y: 300 },
           subNodes: [
             { id: 'commitment', label: 'Commitment' }
           ],
@@ -285,7 +298,6 @@ const WorkflowDiagram = () => {
         {
           id: 'closing',
           label: 'Closing System',
-          position: { x: 1250, y: 300 },
           subNodes: [
             { id: 'settlement', label: 'Settlement' }
           ],
@@ -360,12 +372,15 @@ const WorkflowDiagram = () => {
   const generateNodes = (workflowData: WorkflowData): Node[] => {
     const nodes: Node[] = [];
 
-    workflowData.applications.forEach((app) => {
+    workflowData.applications.forEach((app, index) => {
+      // Calculate dynamic position based on index
+      const position = calculatePosition(index);
+      
       // Create application container
       nodes.push({
         id: `${app.id}-container`,
         type: 'container',
-        position: app.position,
+        position: position,
         data: { 
           label: app.label,
           width: containerWidth,
@@ -499,7 +514,6 @@ const WorkflowDiagram = () => {
         {
           id: 'lsa',
           label: 'LSA',
-          position: { x: 50, y: 50 },  // Top row - position 1
           subNodes: [
             { id: 'commitment', label: 'Commitment' }
           ],
@@ -518,7 +532,6 @@ const WorkflowDiagram = () => {
         {
           id: 'los',
           label: 'LOS',
-          position: { x: 450, y: 300 },  // Bottom row - position 2
           subNodes: [
             { id: 'application', label: 'Application' }
           ],
@@ -537,7 +550,6 @@ const WorkflowDiagram = () => {
         {
           id: 'credit',
           label: 'Credit Bureau',
-          position: { x: 850, y: 50 },  // Top row - position 3
           subNodes: [
             { id: 'credit-check', label: 'Credit Check' }
           ],
@@ -556,7 +568,6 @@ const WorkflowDiagram = () => {
         {
           id: 'dms',
           label: 'Document Mgmt',
-          position: { x: 1250, y: 300 },  // Bottom row - position 4
           subNodes: [
             { id: 'documents', label: 'Documents' }
           ],
@@ -575,7 +586,6 @@ const WorkflowDiagram = () => {
         {
           id: 'underwriting',
           label: 'Underwriting',
-          position: { x: 1650, y: 50 },  // Top row - position 5
           subNodes: [
             { id: 'risk-assessment', label: 'Risk Assessment' }
           ],
@@ -594,7 +604,6 @@ const WorkflowDiagram = () => {
         {
           id: 'cwpmf',
           label: 'CW/PMF',
-          position: { x: 2050, y: 300 },  // Bottom row - position 6
           subNodes: [
             { id: 'hypo-loan', label: 'Hypo Loan F' }
           ],
@@ -608,7 +617,6 @@ const WorkflowDiagram = () => {
         {
           id: 'cwflume',
           label: 'CW/FLUME',
-          position: { x: 2450, y: 50 },  // Top row - position 7
           subNodes: [
             { id: 'commitment', label: 'Commitment' }
           ],
@@ -627,7 +635,6 @@ const WorkflowDiagram = () => {
         {
           id: 'closing',
           label: 'Closing System',
-          position: { x: 2850, y: 300 },  // Bottom row - position 8
           subNodes: [
             { id: 'settlement', label: 'Settlement' }
           ],
