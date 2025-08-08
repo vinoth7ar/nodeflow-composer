@@ -15,40 +15,8 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
-// TypeScript Interfaces for Component Props
-interface WorkflowContainerData {
-  width: number;
-  height: number;
-  label: string;
-}
-
-interface ContainerData {
-  width: number;
-  height: number;
-  label: string;
-}
-
-interface WorkflowNodeData {
-  label: string;
-  status?: string;
-}
-
-interface ActionNodeData {
-  label: string;
-  icon?: string;
-}
-
-interface TextNodeData {
-  label: string;
-}
-
-interface StepNodeData {
-  label: string;
-  icon?: string;
-}
-
-// Custom Node Components with proper TypeScript types
-const WorkflowContainerNode: React.FC<{ data: WorkflowContainerData }> = ({ data }) => (
+// Custom Node Components
+const WorkflowContainerNode = ({ data }: { data: any }) => (
   <div className="workflow-container-inner" style={{ 
     width: data.width, 
     height: data.height, 
@@ -63,13 +31,13 @@ const WorkflowContainerNode: React.FC<{ data: WorkflowContainerData }> = ({ data
   </div>
 );
 
-const ContainerNode: React.FC<{ data: ContainerData }> = ({ data }) => (
+const ContainerNode = ({ data }: { data: any }) => (
   <div className="workflow-container" style={{ width: data.width, height: data.height, padding: '16px' }}>
     <div className="workflow-header">{data.label}</div>
   </div>
 );
 
-const WorkflowNode: React.FC<{ data: WorkflowNodeData }> = ({ data }) => (
+const WorkflowNode = ({ data }: { data: any }) => (
   <>
     <Handle type="target" position={Position.Left} style={{ opacity: 0 }} />
     <div className={`workflow-node ${data.status || ''}`}>
@@ -79,7 +47,7 @@ const WorkflowNode: React.FC<{ data: WorkflowNodeData }> = ({ data }) => (
   </>
 );
 
-const ActionNode: React.FC<{ data: ActionNodeData }> = ({ data }) => (
+const ActionNode = ({ data }: { data: any }) => (
   <>
     <Handle type="target" position={Position.Left} style={{ opacity: 0 }} />
     <div className="workflow-action">
@@ -90,7 +58,7 @@ const ActionNode: React.FC<{ data: ActionNodeData }> = ({ data }) => (
   </>
 );
 
-const TextNode: React.FC<{ data: TextNodeData }> = ({ data }) => (
+const TextNode = ({ data }: { data: any }) => (
   <>
     <Handle type="target" position={Position.Top} style={{ opacity: 0 }} />
     <div className="workflow-action-text">
@@ -100,7 +68,7 @@ const TextNode: React.FC<{ data: TextNodeData }> = ({ data }) => (
   </>
 );
 
-const StepNode: React.FC<{ data: StepNodeData }> = ({ data }) => (
+const StepNode = ({ data }: { data: any }) => (
   <>
     <Handle type="target" position={Position.Left} style={{ opacity: 0 }} />
     <div className="workflow-step-node">
@@ -113,6 +81,7 @@ const StepNode: React.FC<{ data: StepNodeData }> = ({ data }) => (
 
 const nodeTypes: NodeTypes = {
   container: ContainerNode,
+  workflowContainer: WorkflowContainerNode,
   workflow: WorkflowNode,
   action: ActionNode,
   text: TextNode,
@@ -159,21 +128,25 @@ interface WorkflowData {
   connections: WorkflowConnection[];
 }
 
-const WorkflowDiagram: React.FC = () => {
-  // Container configuration - increased for better spacing
-  const containerWidth = 450;
-  const containerHeight = 240;
+const WorkflowDiagram = () => {
+  // Container configuration
+  const containerWidth = 350;
+  const containerHeight = 200;
+  const workflowContainerWidth = 300;
+  const workflowContainerHeight = 100;
   
-  // Layout configuration for better spacing and positioning
+  // Layout configuration to match Figma design
   const layoutConfig = {
     subNodeY: 70,
-    statusNodeY: 25,         // Status nodes positioned higher
-    eventNodeY: 75,          // Event nodes positioned lower with more space
+    workflowContainerY: 90,  // Position of workflow container
+    statusNodeY: 20,         // Relative to workflow container
+    eventNodeY: 50,          // Relative to workflow container
     subNodeStartX: 20,
     descriptiveTextX: 120,
-    eventNodeStartX: 30,     // Event nodes positioned more to the left
-    eventNodeSpacing: 150,   // Increased horizontal spacing
-    statusNodeOffsetX: 75,   // Center status nodes between events with better spacing
+    workflowContainerX: 25,  // Position of workflow container
+    eventNodeStartX: 15,     // Relative to workflow container
+    eventNodeSpacing: 120,   // Reduced spacing for smaller container
+    statusNodeOffsetX: 60,   // Offset to center status nodes between events
   };
 
   // TODO: Replace with actual backend API call
@@ -440,9 +413,33 @@ const WorkflowDiagram: React.FC = () => {
         });
       });
 
-      // Skip creating workflow container - render nodes directly in main container
+      // Create workflow container only if app has events or status nodes
+      if (app.events.length > 0 || app.statusNodes.length > 0) {
+        nodes.push({
+          id: `${app.id}-workflow-container`,
+          type: 'workflowContainer',
+          position: { 
+            x: layoutConfig.workflowContainerX, 
+            y: layoutConfig.workflowContainerY 
+          },
+          data: { 
+            label: 'Workflow',
+            width: workflowContainerWidth,
+            height: workflowContainerHeight
+          },
+          style: { 
+            width: workflowContainerWidth, 
+            height: workflowContainerHeight,
+            zIndex: 1
+          },
+          parentId: `${app.id}-container`,
+          extent: 'parent',
+          selectable: false,
+          draggable: false,
+        });
+      }
 
-      // Create status nodes - positioned directly in main container
+      // Create status nodes - positioned inside workflow container
       app.statusNodes.forEach((statusNode, index) => {
         const nodeType = statusNode.label.toLowerCase() === 'create' ? 'step' : 'action';
         const xPosition = layoutConfig.eventNodeStartX + layoutConfig.statusNodeOffsetX + (index * layoutConfig.eventNodeSpacing);
@@ -455,12 +452,12 @@ const WorkflowDiagram: React.FC = () => {
             y: layoutConfig.statusNodeY 
           },
           data: { label: statusNode.label, icon: statusNode.icon },
-          parentId: `${app.id}-container`,
+          parentId: `${app.id}-workflow-container`,
           extent: 'parent',
         });
       });
 
-      // Create event nodes - positioned directly in main container, more to the left
+      // Create event nodes - positioned inside workflow container
       app.events.forEach((event, index) => {
         nodes.push({
           id: `${app.id}-${event.id}`,
@@ -470,7 +467,7 @@ const WorkflowDiagram: React.FC = () => {
             y: layoutConfig.eventNodeY 
           },
           data: { label: event.label, status: event.status },
-          parentId: `${app.id}-container`,
+          parentId: `${app.id}-workflow-container`,
           extent: 'parent',
         });
       });
@@ -524,7 +521,7 @@ const WorkflowDiagram: React.FC = () => {
         {
           id: 'los',
           label: 'LOS',
-          position: { x: 550, y: 350 },  // Bottom row - position 2
+          position: { x: 450, y: 300 },  // Bottom row - position 2
           subNodes: [
             { id: 'application', label: 'Application' }
           ],
@@ -543,7 +540,7 @@ const WorkflowDiagram: React.FC = () => {
         {
           id: 'credit',
           label: 'Credit Bureau',
-          position: { x: 1050, y: 50 },  // Top row - position 3
+          position: { x: 850, y: 50 },  // Top row - position 3
           subNodes: [
             { id: 'credit-check', label: 'Credit Check' }
           ],
@@ -562,7 +559,7 @@ const WorkflowDiagram: React.FC = () => {
         {
           id: 'dms',
           label: 'Document Mgmt',
-          position: { x: 1550, y: 350 },  // Bottom row - position 4
+          position: { x: 1250, y: 300 },  // Bottom row - position 4
           subNodes: [
             { id: 'documents', label: 'Documents' }
           ],
@@ -581,7 +578,7 @@ const WorkflowDiagram: React.FC = () => {
         {
           id: 'underwriting',
           label: 'Underwriting',
-          position: { x: 2050, y: 50 },  // Top row - position 5
+          position: { x: 1650, y: 50 },  // Top row - position 5
           subNodes: [
             { id: 'risk-assessment', label: 'Risk Assessment' }
           ],
@@ -600,7 +597,7 @@ const WorkflowDiagram: React.FC = () => {
         {
           id: 'cwpmf',
           label: 'CW/PMF',
-          position: { x: 2550, y: 350 },  // Bottom row - position 6
+          position: { x: 2050, y: 300 },  // Bottom row - position 6
           subNodes: [
             { id: 'hypo-loan', label: 'Hypo Loan F' }
           ],
@@ -614,7 +611,7 @@ const WorkflowDiagram: React.FC = () => {
         {
           id: 'cwflume',
           label: 'CW/FLUME',
-          position: { x: 3050, y: 50 },  // Top row - position 7
+          position: { x: 2450, y: 50 },  // Top row - position 7
           subNodes: [
             { id: 'commitment', label: 'Commitment' }
           ],
@@ -633,7 +630,7 @@ const WorkflowDiagram: React.FC = () => {
         {
           id: 'closing',
           label: 'Closing System',
-          position: { x: 3550, y: 350 },  // Bottom row - position 8
+          position: { x: 2850, y: 300 },  // Bottom row - position 8
           subNodes: [
             { id: 'settlement', label: 'Settlement' }
           ],
@@ -715,7 +712,7 @@ const WorkflowDiagram: React.FC = () => {
   );
 
   return (
-    <div className="app-container">
+    <div className="w-full h-screen">
       <ReactFlow
         nodes={nodes}
         edges={edges}
