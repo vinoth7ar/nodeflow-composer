@@ -150,10 +150,8 @@ All colors MUST be HSL.
 }
 
 .workflow-header {
-  background: hsl(var(--primary));
-  color: hsl(var(--primary-foreground));
+  color: hsl(var(--foreground));
   padding: 4px 12px;
-  border-radius: 4px;
   font-size: 12px;
   font-weight: 600;
   position: absolute;
