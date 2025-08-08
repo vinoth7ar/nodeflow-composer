@@ -81,7 +81,6 @@ const StepNode = ({ data }: { data: any }) => (
 
 const nodeTypes: NodeTypes = {
   container: ContainerNode,
-  workflowContainer: WorkflowContainerNode,
   workflow: WorkflowNode,
   action: ActionNode,
   text: TextNode,
@@ -129,24 +128,20 @@ interface WorkflowData {
 }
 
 const WorkflowDiagram = () => {
-  // Container configuration
-  const containerWidth = 350;
-  const containerHeight = 200;
-  const workflowContainerWidth = 300;
-  const workflowContainerHeight = 100;
+  // Container configuration - increased for better spacing
+  const containerWidth = 450;
+  const containerHeight = 240;
   
-  // Layout configuration to match Figma design
+  // Layout configuration for better spacing and positioning
   const layoutConfig = {
     subNodeY: 70,
-    workflowContainerY: 90,  // Position of workflow container
-    statusNodeY: 20,         // Relative to workflow container
-    eventNodeY: 50,          // Relative to workflow container
+    statusNodeY: 25,         // Status nodes positioned higher
+    eventNodeY: 75,          // Event nodes positioned lower with more space
     subNodeStartX: 20,
     descriptiveTextX: 120,
-    workflowContainerX: 25,  // Position of workflow container
-    eventNodeStartX: 15,     // Relative to workflow container
-    eventNodeSpacing: 120,   // Reduced spacing for smaller container
-    statusNodeOffsetX: 60,   // Offset to center status nodes between events
+    eventNodeStartX: 30,     // Event nodes positioned more to the left
+    eventNodeSpacing: 150,   // Increased horizontal spacing
+    statusNodeOffsetX: 75,   // Center status nodes between events with better spacing
   };
 
   // TODO: Replace with actual backend API call
@@ -413,33 +408,9 @@ const WorkflowDiagram = () => {
         });
       });
 
-      // Create workflow container only if app has events or status nodes
-      if (app.events.length > 0 || app.statusNodes.length > 0) {
-        nodes.push({
-          id: `${app.id}-workflow-container`,
-          type: 'workflowContainer',
-          position: { 
-            x: layoutConfig.workflowContainerX, 
-            y: layoutConfig.workflowContainerY 
-          },
-          data: { 
-            label: 'Workflow',
-            width: workflowContainerWidth,
-            height: workflowContainerHeight
-          },
-          style: { 
-            width: workflowContainerWidth, 
-            height: workflowContainerHeight,
-            zIndex: 1
-          },
-          parentId: `${app.id}-container`,
-          extent: 'parent',
-          selectable: false,
-          draggable: false,
-        });
-      }
+      // Skip creating workflow container - render nodes directly in main container
 
-      // Create status nodes - positioned inside workflow container
+      // Create status nodes - positioned directly in main container
       app.statusNodes.forEach((statusNode, index) => {
         const nodeType = statusNode.label.toLowerCase() === 'create' ? 'step' : 'action';
         const xPosition = layoutConfig.eventNodeStartX + layoutConfig.statusNodeOffsetX + (index * layoutConfig.eventNodeSpacing);
@@ -452,12 +423,12 @@ const WorkflowDiagram = () => {
             y: layoutConfig.statusNodeY 
           },
           data: { label: statusNode.label, icon: statusNode.icon },
-          parentId: `${app.id}-workflow-container`,
+          parentId: `${app.id}-container`,
           extent: 'parent',
         });
       });
 
-      // Create event nodes - positioned inside workflow container
+      // Create event nodes - positioned directly in main container, more to the left
       app.events.forEach((event, index) => {
         nodes.push({
           id: `${app.id}-${event.id}`,
@@ -467,7 +438,7 @@ const WorkflowDiagram = () => {
             y: layoutConfig.eventNodeY 
           },
           data: { label: event.label, status: event.status },
-          parentId: `${app.id}-workflow-container`,
+          parentId: `${app.id}-container`,
           extent: 'parent',
         });
       });
@@ -521,7 +492,7 @@ const WorkflowDiagram = () => {
         {
           id: 'los',
           label: 'LOS',
-          position: { x: 450, y: 300 },  // Bottom row - position 2
+          position: { x: 550, y: 350 },  // Bottom row - position 2
           subNodes: [
             { id: 'application', label: 'Application' }
           ],
@@ -540,7 +511,7 @@ const WorkflowDiagram = () => {
         {
           id: 'credit',
           label: 'Credit Bureau',
-          position: { x: 850, y: 50 },  // Top row - position 3
+          position: { x: 1050, y: 50 },  // Top row - position 3
           subNodes: [
             { id: 'credit-check', label: 'Credit Check' }
           ],
@@ -559,7 +530,7 @@ const WorkflowDiagram = () => {
         {
           id: 'dms',
           label: 'Document Mgmt',
-          position: { x: 1250, y: 300 },  // Bottom row - position 4
+          position: { x: 1550, y: 350 },  // Bottom row - position 4
           subNodes: [
             { id: 'documents', label: 'Documents' }
           ],
@@ -578,7 +549,7 @@ const WorkflowDiagram = () => {
         {
           id: 'underwriting',
           label: 'Underwriting',
-          position: { x: 1650, y: 50 },  // Top row - position 5
+          position: { x: 2050, y: 50 },  // Top row - position 5
           subNodes: [
             { id: 'risk-assessment', label: 'Risk Assessment' }
           ],
@@ -597,7 +568,7 @@ const WorkflowDiagram = () => {
         {
           id: 'cwpmf',
           label: 'CW/PMF',
-          position: { x: 2050, y: 300 },  // Bottom row - position 6
+          position: { x: 2550, y: 350 },  // Bottom row - position 6
           subNodes: [
             { id: 'hypo-loan', label: 'Hypo Loan F' }
           ],
@@ -611,7 +582,7 @@ const WorkflowDiagram = () => {
         {
           id: 'cwflume',
           label: 'CW/FLUME',
-          position: { x: 2450, y: 50 },  // Top row - position 7
+          position: { x: 3050, y: 50 },  // Top row - position 7
           subNodes: [
             { id: 'commitment', label: 'Commitment' }
           ],
@@ -630,7 +601,7 @@ const WorkflowDiagram = () => {
         {
           id: 'closing',
           label: 'Closing System',
-          position: { x: 2850, y: 300 },  // Bottom row - position 8
+          position: { x: 3550, y: 350 },  // Bottom row - position 8
           subNodes: [
             { id: 'settlement', label: 'Settlement' }
           ],

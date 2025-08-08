@@ -143,92 +143,169 @@ All colors MUST be HSL.
 }
 
 .workflow-container {
-  background: hsl(var(--workflow-container));
-  border: 2px solid hsl(var(--workflow-border));
-  border-radius: 8px;
+  background: #ffffff;
+  border: 2px solid #E6E6E6;
+  border-radius: 12px;
   position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .workflow-header {
-  background: hsl(var(--primary));
-  color: hsl(var(--primary-foreground));
-  padding: 4px 12px;
-  border-radius: 4px;
-  font-size: 12px;
+  background: #1A1A1A;
+  color: #ffffff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
   font-weight: 600;
   position: absolute;
-  top: -10px;
-  left: 12px;
+  top: -12px;
+  left: 16px;
 }
 
 .workflow-node {
-  background: hsl(var(--workflow-node));
-  border: 1px solid hsl(var(--workflow-node-border));
-  border-radius: 4px;
-  padding: 8px 12px;
+  background: #F0F0F0;
+  border: 1px solid #CCCCCC;
+  border-radius: 8px;
+  padding: 8px 16px;
   font-size: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 80px;
-  min-height: 32px;
-}
-
-.workflow-node.accepted {
-  background: hsl(var(--workflow-accepted));
-  border-color: hsl(var(--workflow-accepted-border));
-  color: hsl(var(--workflow-accepted-border));
+  min-width: 100px;
+  min-height: 36px;
   font-weight: 500;
+  color: #333333;
 }
 
 .workflow-node.created {
-  background: hsl(var(--workflow-created));
-  border-color: hsl(var(--workflow-created-border));
-  color: hsl(var(--foreground));
+  background: #FFF3CD;
+  color: #856404;
+  border-color: #FFEAA7;
+}
+
+.workflow-node.accepted {
+  background: #D4EDDA;
+  color: #155724;
+  border-color: #C3E6CB;
+}
+
+.workflow-node.submitted {
+  background: #CCE5FF;
+  color: #004085;
+  border-color: #B8DAFF;
+}
+
+.workflow-node.validated {
+  background: #D1ECF1;
+  color: #0C5460;
+  border-color: #BEE5EB;
+}
+
+.workflow-node.pulled {
+  background: #E2E3E5;
+  color: #383D41;
+  border-color: #D6D8DB;
+}
+
+.workflow-node.analyzed {
+  background: #F8D7DA;
+  color: #721C24;
+  border-color: #F5C6CB;
+}
+
+.workflow-node.collected {
+  background: #D4EDDA;
+  color: #155724;
+  border-color: #C3E6CB;
+}
+
+.workflow-node.verified {
+  background: #CCE5FF;
+  color: #004085;
+  border-color: #B8DAFF;
+}
+
+.workflow-node.reviewed {
+  background: #FFEAA7;
+  color: #856404;
+  border-color: #FFEAA7;
+}
+
+.workflow-node.approved {
+  background: #D4EDDA;
+  color: #155724;
+  border-color: #C3E6CB;
 }
 
 .workflow-node.staged {
-  background: hsl(var(--workflow-staged));
-  border-color: hsl(var(--workflow-staged-border));
-  color: hsl(var(--foreground));
+  background: #E2E3E5;
+  color: #383D41;
+  border-color: #D6D8DB;
+}
+
+.workflow-node.finalized {
+  background: #D4EDDA;
+  color: #155724;
+  border-color: #C3E6CB;
+}
+
+.workflow-node.prepared {
+  background: #CCE5FF;
+  color: #004085;
+  border-color: #B8DAFF;
+}
+
+.workflow-node.closed {
+  background: #D4EDDA;
+  color: #155724;
+  border-color: #C3E6CB;
 }
 
 .workflow-action {
-  background: hsl(var(--workflow-action));
-  color: hsl(var(--workflow-action-foreground));
-  border: none;
-  border-radius: 4px;
+  background: #007BFF;
+  color: #FFFFFF;
+  border: 1px solid #007BFF;
+  border-radius: 6px;
   padding: 6px 12px;
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 4px;
+  min-width: 70px;
+  min-height: 28px;
+  box-shadow: 0 1px 3px rgba(0, 123, 255, 0.2);
 }
 
 .workflow-action-text {
-  background: hsl(var(--card));
-  color: hsl(var(--foreground));
-  border: 1px solid hsl(var(--border));
+  background: transparent;
+  color: #6C757D;
+  border: none;
   border-radius: 4px;
   padding: 4px 8px;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 400;
+  text-align: center;
+  max-width: 120px;
+  word-wrap: break-word;
+  line-height: 1.2;
 }
 
 .workflow-step-node {
-  background: hsl(var(--card));
-  border: 1px solid hsl(var(--border));
-  border-radius: 4px;
-  padding: 6px;
+  background: #28A745;
+  color: #FFFFFF;
+  border: 1px solid #28A745;
+  border-radius: 6px;
+  padding: 6px 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 11px;
-  color: hsl(var(--foreground));
-  min-width: 60px;
-  min-height: 24px;
+  font-weight: 600;
+  min-width: 70px;
+  min-height: 28px;
+  box-shadow: 0 1px 3px rgba(40, 167, 69, 0.2);
 }
 
 .workflow-edge {
