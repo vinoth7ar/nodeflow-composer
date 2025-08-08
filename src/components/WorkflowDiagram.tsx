@@ -107,7 +107,6 @@ const WorkflowDiagram = () => {
       data: { label: 'Commitment' },
       parentId: 'lsa-container',
       extent: 'parent',
-      draggable: false,
     },
     {
       id: 'lsa-create-step',
@@ -116,7 +115,6 @@ const WorkflowDiagram = () => {
       data: { label: 'Create', icon: '1' },
       parentId: 'lsa-container',
       extent: 'parent',
-      draggable: false,
     },
     {
       id: 'lsa-created',
@@ -125,7 +123,6 @@ const WorkflowDiagram = () => {
       data: { label: 'created', status: 'created' },
       parentId: 'lsa-container',
       extent: 'parent',
-      draggable: false,
     },
     {
       id: 'lsa-accept',
@@ -134,7 +131,6 @@ const WorkflowDiagram = () => {
       data: { label: 'Accept', icon: '✓' },
       parentId: 'lsa-container',
       extent: 'parent',
-      draggable: false,
     },
     {
       id: 'lsa-accept-text',
@@ -143,7 +139,6 @@ const WorkflowDiagram = () => {
       data: { label: 'Seller accepts commitment details' },
       parentId: 'lsa-container',
       extent: 'parent',
-      draggable: false,
     },
     {
       id: 'lsa-accepted',
@@ -152,7 +147,6 @@ const WorkflowDiagram = () => {
       data: { label: 'accepted', status: 'accepted' },
       parentId: 'lsa-container',
       extent: 'parent',
-      draggable: false,
     },
 
     // CW/PMF Container
@@ -182,7 +176,6 @@ const WorkflowDiagram = () => {
       data: { label: 'Hypo Loan F' },
       parentId: 'cwpmf-container',
       extent: 'parent',
-      draggable: false,
     },
     {
       id: 'cwpmf-stage-step',
@@ -191,7 +184,6 @@ const WorkflowDiagram = () => {
       data: { label: 'Stage', icon: '3' },
       parentId: 'cwpmf-container',
       extent: 'parent',
-      draggable: false,
     },
 
     // CW/FLUME Container
@@ -221,7 +213,6 @@ const WorkflowDiagram = () => {
       data: { label: 'Commitment' },
       parentId: 'cwflume-container',
       extent: 'parent',
-      draggable: false,
     },
     {
       id: 'cwflume-accept',
@@ -230,7 +221,6 @@ const WorkflowDiagram = () => {
       data: { label: 'Accept', icon: '✓' },
       parentId: 'cwflume-container',
       extent: 'parent',
-      draggable: false,
     },
     {
       id: 'cwflume-accept-text',
@@ -239,7 +229,6 @@ const WorkflowDiagram = () => {
       data: { label: 'Seller accepts commitment details' },
       parentId: 'cwflume-container',
       extent: 'parent',
-      draggable: false,
     },
     {
       id: 'cwflume-accepted',
@@ -248,7 +237,6 @@ const WorkflowDiagram = () => {
       data: { label: 'accepted', status: 'accepted' },
       parentId: 'cwflume-container',
       extent: 'parent',
-      draggable: false,
     },
     {
       id: 'cwflume-stage-step',
@@ -257,7 +245,6 @@ const WorkflowDiagram = () => {
       data: { label: 'Stage', icon: '3' },
       parentId: 'cwflume-container',
       extent: 'parent',
-      draggable: false,
     },
     {
       id: 'cwflume-staged',
@@ -266,7 +253,6 @@ const WorkflowDiagram = () => {
       data: { label: 'staged', status: 'staged' },
       parentId: 'cwflume-container',
       extent: 'parent',
-      draggable: false,
     },
   ], []);
 
