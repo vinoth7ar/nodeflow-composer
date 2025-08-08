@@ -25,9 +25,6 @@ const WorkflowContainerNode = ({ data }: { data: any }) => (
     backgroundColor: 'hsl(var(--background))',
     padding: '8px'
   }}>
-    <div className="workflow-header" style={{ fontSize: '12px', fontWeight: 'bold', color: 'hsl(var(--primary))' }}>
-      {data.label}
-    </div>
   </div>
 );
 
