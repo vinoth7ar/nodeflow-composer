@@ -154,7 +154,7 @@ const WorkflowDiagram = () => {
     // Placeholder for backend integration
     // return await api.get('/workflow-data');
     
-    // Demo data - hardcoded for now
+    // Demo data - 8 applications representing complete loan workflow
     return {
       applications: [
         {
@@ -177,21 +177,99 @@ const WorkflowDiagram = () => {
           ]
         },
         {
+          id: 'los',
+          label: 'LOS',
+          position: { x: 450, y: 50 },
+          subNodes: [
+            { id: 'application', label: 'Application' }
+          ],
+          descriptiveTexts: [
+            { id: 'submit-desc', label: 'Borrower submits loan application' }
+          ],
+          statusNodes: [
+            { id: 'submit', label: 'Submit', icon: '2' },
+            { id: 'validate', label: 'Validate', icon: '✓' }
+          ],
+          events: [
+            { id: 'submitted', label: 'submitted', status: 'submitted' },
+            { id: 'validated', label: 'validated', status: 'validated' }
+          ]
+        },
+        {
+          id: 'credit',
+          label: 'Credit Bureau',
+          position: { x: 850, y: 50 },
+          subNodes: [
+            { id: 'credit-check', label: 'Credit Check' }
+          ],
+          descriptiveTexts: [
+            { id: 'pull-desc', label: 'Pull credit report and score' }
+          ],
+          statusNodes: [
+            { id: 'pull', label: 'Pull', icon: '3' },
+            { id: 'analyze', label: 'Analyze', icon: '✓' }
+          ],
+          events: [
+            { id: 'pulled', label: 'pulled', status: 'pulled' },
+            { id: 'analyzed', label: 'analyzed', status: 'analyzed' }
+          ]
+        },
+        {
+          id: 'dms',
+          label: 'Document Mgmt',
+          position: { x: 1250, y: 50 },
+          subNodes: [
+            { id: 'documents', label: 'Documents' }
+          ],
+          descriptiveTexts: [
+            { id: 'collect-desc', label: 'Collect required documents' }
+          ],
+          statusNodes: [
+            { id: 'collect', label: 'Collect', icon: '4' },
+            { id: 'verify', label: 'Verify', icon: '✓' }
+          ],
+          events: [
+            { id: 'collected', label: 'collected', status: 'collected' },
+            { id: 'verified', label: 'verified', status: 'verified' }
+          ]
+        },
+        {
+          id: 'underwriting',
+          label: 'Underwriting',
+          position: { x: 50, y: 300 },
+          subNodes: [
+            { id: 'risk-assessment', label: 'Risk Assessment' }
+          ],
+          descriptiveTexts: [
+            { id: 'review-desc', label: 'Review loan application risk' }
+          ],
+          statusNodes: [
+            { id: 'review', label: 'Review', icon: '5' },
+            { id: 'approve', label: 'Approve', icon: '✓' }
+          ],
+          events: [
+            { id: 'reviewed', label: 'reviewed', status: 'reviewed' },
+            { id: 'approved', label: 'approved', status: 'approved' }
+          ]
+        },
+        {
           id: 'cwpmf',
           label: 'CW/PMF',
-          position: { x: 450, y: 50 },
+          position: { x: 450, y: 300 },
           subNodes: [
             { id: 'hypo-loan', label: 'Hypo Loan F' }
           ],
           statusNodes: [
-            { id: 'stage', label: 'Stage', icon: '3' }
+            { id: 'stage', label: 'Stage', icon: '6' }
           ],
-          events: []
+          events: [
+            { id: 'staged', label: 'staged', status: 'staged' }
+          ]
         },
         {
           id: 'cwflume',
           label: 'CW/FLUME',
-          position: { x: 250, y: 300 },
+          position: { x: 850, y: 300 },
           subNodes: [
             { id: 'commitment', label: 'Commitment' }
           ],
@@ -200,21 +278,83 @@ const WorkflowDiagram = () => {
           ],
           statusNodes: [
             { id: 'accept', label: 'Accept', icon: '✓' },
-            { id: 'stage', label: 'Stage', icon: '3' }
+            { id: 'finalize', label: 'Finalize', icon: '7' }
           ],
           events: [
             { id: 'accepted', label: 'accepted', status: 'accepted' },
-            { id: 'staged', label: 'staged', status: 'staged' }
+            { id: 'finalized', label: 'finalized', status: 'finalized' }
+          ]
+        },
+        {
+          id: 'closing',
+          label: 'Closing System',
+          position: { x: 1250, y: 300 },
+          subNodes: [
+            { id: 'settlement', label: 'Settlement' }
+          ],
+          descriptiveTexts: [
+            { id: 'close-desc', label: 'Complete loan closing process' }
+          ],
+          statusNodes: [
+            { id: 'prepare', label: 'Prepare', icon: '8' },
+            { id: 'close', label: 'Close', icon: '✓' }
+          ],
+          events: [
+            { id: 'prepared', label: 'prepared', status: 'prepared' },
+            { id: 'closed', label: 'closed', status: 'closed' }
           ]
         }
       ],
       connections: [
+        // Row 1 connections (LSA -> LOS -> Credit -> DMS)
+        { id: 'lsa-accepted-to-los-submit', source: 'lsa-accepted', target: 'los-submit', style: 'action' },
+        { id: 'los-validated-to-credit-pull', source: 'los-validated', target: 'credit-pull', style: 'action' },
+        { id: 'credit-analyzed-to-dms-collect', source: 'credit-analyzed', target: 'dms-collect', style: 'action' },
+        
+        // Row 2 connections (Underwriting -> CW/PMF -> CW/FLUME -> Closing)
+        { id: 'dms-verified-to-underwriting-review', source: 'dms-verified', target: 'underwriting-review', style: 'action' },
+        { id: 'underwriting-approved-to-cwpmf-stage', source: 'underwriting-approved', target: 'cwpmf-stage', style: 'action' },
+        { id: 'cwpmf-staged-to-cwflume-accept', source: 'cwpmf-staged', target: 'cwflume-accept', style: 'action' },
+        { id: 'cwflume-finalized-to-closing-prepare', source: 'cwflume-finalized', target: 'closing-prepare', style: 'action' },
+        
+        // Internal workflow connections for each application
+        // LSA
         { id: 'lsa-create-to-created', source: 'lsa-create', target: 'lsa-created' },
         { id: 'lsa-created-to-accept', source: 'lsa-created', target: 'lsa-accept' },
         { id: 'lsa-accept-to-accepted', source: 'lsa-accept', target: 'lsa-accepted', style: 'action' },
+        
+        // LOS
+        { id: 'los-submit-to-submitted', source: 'los-submit', target: 'los-submitted' },
+        { id: 'los-submitted-to-validate', source: 'los-submitted', target: 'los-validate' },
+        { id: 'los-validate-to-validated', source: 'los-validate', target: 'los-validated', style: 'action' },
+        
+        // Credit Bureau
+        { id: 'credit-pull-to-pulled', source: 'credit-pull', target: 'credit-pulled' },
+        { id: 'credit-pulled-to-analyze', source: 'credit-pulled', target: 'credit-analyze' },
+        { id: 'credit-analyze-to-analyzed', source: 'credit-analyze', target: 'credit-analyzed', style: 'action' },
+        
+        // Document Management
+        { id: 'dms-collect-to-collected', source: 'dms-collect', target: 'dms-collected' },
+        { id: 'dms-collected-to-verify', source: 'dms-collected', target: 'dms-verify' },
+        { id: 'dms-verify-to-verified', source: 'dms-verify', target: 'dms-verified', style: 'action' },
+        
+        // Underwriting
+        { id: 'underwriting-review-to-reviewed', source: 'underwriting-review', target: 'underwriting-reviewed' },
+        { id: 'underwriting-reviewed-to-approve', source: 'underwriting-reviewed', target: 'underwriting-approve' },
+        { id: 'underwriting-approve-to-approved', source: 'underwriting-approve', target: 'underwriting-approved', style: 'action' },
+        
+        // CW/PMF
+        { id: 'cwpmf-stage-to-staged', source: 'cwpmf-stage', target: 'cwpmf-staged' },
+        
+        // CW/FLUME
         { id: 'cwflume-accept-to-accepted', source: 'cwflume-accept', target: 'cwflume-accepted', style: 'action' },
-        { id: 'cwflume-accepted-to-stage', source: 'cwflume-accepted', target: 'cwflume-stage' },
-        { id: 'cwflume-stage-to-staged', source: 'cwflume-stage', target: 'cwflume-staged' }
+        { id: 'cwflume-accepted-to-finalize', source: 'cwflume-accepted', target: 'cwflume-finalize' },
+        { id: 'cwflume-finalize-to-finalized', source: 'cwflume-finalize', target: 'cwflume-finalized', style: 'action' },
+        
+        // Closing
+        { id: 'closing-prepare-to-prepared', source: 'closing-prepare', target: 'closing-prepared' },
+        { id: 'closing-prepared-to-close', source: 'closing-prepared', target: 'closing-close' },
+        { id: 'closing-close-to-closed', source: 'closing-close', target: 'closing-closed', style: 'action' }
       ]
     };
   };
@@ -353,75 +493,214 @@ const WorkflowDiagram = () => {
     }));
   };
 
-  // Demo data - in real app this would come from fetchWorkflowData()
-  const workflowData: WorkflowData = useMemo(() => ({
-    applications: [
-      {
-        id: 'lsa',
-        label: 'LSA',
-        position: { x: 50, y: 50 },
-        subNodes: [
-          { id: 'commitment', label: 'Commitment' }
-        ],
-        descriptiveTexts: [
-          { id: 'accept-desc', label: 'Seller accepts commitment details' }
-        ],
-        statusNodes: [
-          { id: 'create', label: 'Create', icon: '1' },
-          { id: 'accept', label: 'Accept', icon: '✓' }
-        ],
-        events: [
-          { id: 'created', label: 'created', status: 'created' },
-          { id: 'accepted', label: 'accepted', status: 'accepted' }
-        ]
-      },
-      {
-        id: 'cwpmf',
-        label: 'CW/PMF',
-        position: { x: 450, y: 50 },
-        subNodes: [
-          { id: 'hypo-loan', label: 'Hypo Loan F' }
-        ],
-        statusNodes: [
-          { id: 'stage', label: 'Stage', icon: '3' }
-        ],
-        events: []
-      },
-      {
-        id: 'cwflume',
-        label: 'CW/FLUME',
-        position: { x: 250, y: 300 },
-        subNodes: [
-          { id: 'commitment', label: 'Commitment' }
-        ],
-        descriptiveTexts: [
-          { id: 'accept-desc', label: 'Seller accepts commitment details' }
-        ],
-        statusNodes: [
-          { id: 'accept', label: 'Accept', icon: '✓' },
-          { id: 'stage', label: 'Stage', icon: '3' }
-        ],
-        events: [
-          { id: 'accepted', label: 'accepted', status: 'accepted' },
-          { id: 'staged', label: 'staged', status: 'staged' }
-        ]
-      }
-    ],
-    connections: [
-      // LSA workflow: status -> event -> status -> event
-      { id: 'lsa-create-to-created', source: 'lsa-create', target: 'lsa-created' },
-      { id: 'lsa-created-to-accept', source: 'lsa-created', target: 'lsa-accept' },
-      { id: 'lsa-accept-to-accepted', source: 'lsa-accept', target: 'lsa-accepted', style: 'action' },
-      
-      // Cross-application connection: LSA created event -> CW/FLUME accept status
-      { id: 'lsa-created-to-cwflume-accept', source: 'lsa-created', target: 'cwflume-accept', style: 'action' },
-      
-      // CW/FLUME workflow: status -> event -> status -> event
-      { id: 'cwflume-accept-to-accepted', source: 'cwflume-accept', target: 'cwflume-accepted', style: 'action' },
-      { id: 'cwflume-accepted-to-stage', source: 'cwflume-accepted', target: 'cwflume-stage' },
-      { id: 'cwflume-stage-to-staged', source: 'cwflume-stage', target: 'cwflume-staged' }
-    ]
-  }), []);
+  // Use the data from fetchWorkflowData function
+  const workflowData: WorkflowData = useMemo(() => {
+    // In production, this would be: await fetchWorkflowData()
+    // For demo, we'll use the function's return value directly
+    const demoData = {
+      applications: [
+        {
+          id: 'lsa',
+          label: 'LSA',
+          position: { x: 50, y: 50 },
+          subNodes: [
+            { id: 'commitment', label: 'Commitment' }
+          ],
+          descriptiveTexts: [
+            { id: 'accept-desc', label: 'Seller accepts commitment details' }
+          ],
+          statusNodes: [
+            { id: 'create', label: 'Create', icon: '1' },
+            { id: 'accept', label: 'Accept', icon: '✓' }
+          ],
+          events: [
+            { id: 'created', label: 'created', status: 'created' },
+            { id: 'accepted', label: 'accepted', status: 'accepted' }
+          ]
+        },
+        {
+          id: 'los',
+          label: 'LOS',
+          position: { x: 450, y: 50 },
+          subNodes: [
+            { id: 'application', label: 'Application' }
+          ],
+          descriptiveTexts: [
+            { id: 'submit-desc', label: 'Borrower submits loan application' }
+          ],
+          statusNodes: [
+            { id: 'submit', label: 'Submit', icon: '2' },
+            { id: 'validate', label: 'Validate', icon: '✓' }
+          ],
+          events: [
+            { id: 'submitted', label: 'submitted', status: 'submitted' },
+            { id: 'validated', label: 'validated', status: 'validated' }
+          ]
+        },
+        {
+          id: 'credit',
+          label: 'Credit Bureau',
+          position: { x: 850, y: 50 },
+          subNodes: [
+            { id: 'credit-check', label: 'Credit Check' }
+          ],
+          descriptiveTexts: [
+            { id: 'pull-desc', label: 'Pull credit report and score' }
+          ],
+          statusNodes: [
+            { id: 'pull', label: 'Pull', icon: '3' },
+            { id: 'analyze', label: 'Analyze', icon: '✓' }
+          ],
+          events: [
+            { id: 'pulled', label: 'pulled', status: 'pulled' },
+            { id: 'analyzed', label: 'analyzed', status: 'analyzed' }
+          ]
+        },
+        {
+          id: 'dms',
+          label: 'Document Mgmt',
+          position: { x: 1250, y: 50 },
+          subNodes: [
+            { id: 'documents', label: 'Documents' }
+          ],
+          descriptiveTexts: [
+            { id: 'collect-desc', label: 'Collect required documents' }
+          ],
+          statusNodes: [
+            { id: 'collect', label: 'Collect', icon: '4' },
+            { id: 'verify', label: 'Verify', icon: '✓' }
+          ],
+          events: [
+            { id: 'collected', label: 'collected', status: 'collected' },
+            { id: 'verified', label: 'verified', status: 'verified' }
+          ]
+        },
+        {
+          id: 'underwriting',
+          label: 'Underwriting',
+          position: { x: 50, y: 300 },
+          subNodes: [
+            { id: 'risk-assessment', label: 'Risk Assessment' }
+          ],
+          descriptiveTexts: [
+            { id: 'review-desc', label: 'Review loan application risk' }
+          ],
+          statusNodes: [
+            { id: 'review', label: 'Review', icon: '5' },
+            { id: 'approve', label: 'Approve', icon: '✓' }
+          ],
+          events: [
+            { id: 'reviewed', label: 'reviewed', status: 'reviewed' },
+            { id: 'approved', label: 'approved', status: 'approved' }
+          ]
+        },
+        {
+          id: 'cwpmf',
+          label: 'CW/PMF',
+          position: { x: 450, y: 300 },
+          subNodes: [
+            { id: 'hypo-loan', label: 'Hypo Loan F' }
+          ],
+          statusNodes: [
+            { id: 'stage', label: 'Stage', icon: '6' }
+          ],
+          events: [
+            { id: 'staged', label: 'staged', status: 'staged' }
+          ]
+        },
+        {
+          id: 'cwflume',
+          label: 'CW/FLUME',
+          position: { x: 850, y: 300 },
+          subNodes: [
+            { id: 'commitment', label: 'Commitment' }
+          ],
+          descriptiveTexts: [
+            { id: 'accept-desc', label: 'Seller accepts commitment details' }
+          ],
+          statusNodes: [
+            { id: 'accept', label: 'Accept', icon: '✓' },
+            { id: 'finalize', label: 'Finalize', icon: '7' }
+          ],
+          events: [
+            { id: 'accepted', label: 'accepted', status: 'accepted' },
+            { id: 'finalized', label: 'finalized', status: 'finalized' }
+          ]
+        },
+        {
+          id: 'closing',
+          label: 'Closing System',
+          position: { x: 1250, y: 300 },
+          subNodes: [
+            { id: 'settlement', label: 'Settlement' }
+          ],
+          descriptiveTexts: [
+            { id: 'close-desc', label: 'Complete loan closing process' }
+          ],
+          statusNodes: [
+            { id: 'prepare', label: 'Prepare', icon: '8' },
+            { id: 'close', label: 'Close', icon: '✓' }
+          ],
+          events: [
+            { id: 'prepared', label: 'prepared', status: 'prepared' },
+            { id: 'closed', label: 'closed', status: 'closed' }
+          ]
+        }
+      ],
+      connections: [
+        // Row 1 connections (LSA -> LOS -> Credit -> DMS)
+        { id: 'lsa-accepted-to-los-submit', source: 'lsa-accepted', target: 'los-submit', style: 'action' as const },
+        { id: 'los-validated-to-credit-pull', source: 'los-validated', target: 'credit-pull', style: 'action' as const },
+        { id: 'credit-analyzed-to-dms-collect', source: 'credit-analyzed', target: 'dms-collect', style: 'action' as const },
+        
+        // Row 2 connections (Underwriting -> CW/PMF -> CW/FLUME -> Closing)
+        { id: 'dms-verified-to-underwriting-review', source: 'dms-verified', target: 'underwriting-review', style: 'action' as const },
+        { id: 'underwriting-approved-to-cwpmf-stage', source: 'underwriting-approved', target: 'cwpmf-stage', style: 'action' as const },
+        { id: 'cwpmf-staged-to-cwflume-accept', source: 'cwpmf-staged', target: 'cwflume-accept', style: 'action' as const },
+        { id: 'cwflume-finalized-to-closing-prepare', source: 'cwflume-finalized', target: 'closing-prepare', style: 'action' as const },
+        
+        // Internal workflow connections for each application
+        // LSA
+        { id: 'lsa-create-to-created', source: 'lsa-create', target: 'lsa-created' },
+        { id: 'lsa-created-to-accept', source: 'lsa-created', target: 'lsa-accept' },
+        { id: 'lsa-accept-to-accepted', source: 'lsa-accept', target: 'lsa-accepted', style: 'action' as const },
+        
+        // LOS
+        { id: 'los-submit-to-submitted', source: 'los-submit', target: 'los-submitted' },
+        { id: 'los-submitted-to-validate', source: 'los-submitted', target: 'los-validate' },
+        { id: 'los-validate-to-validated', source: 'los-validate', target: 'los-validated', style: 'action' as const },
+        
+        // Credit Bureau
+        { id: 'credit-pull-to-pulled', source: 'credit-pull', target: 'credit-pulled' },
+        { id: 'credit-pulled-to-analyze', source: 'credit-pulled', target: 'credit-analyze' },
+        { id: 'credit-analyze-to-analyzed', source: 'credit-analyze', target: 'credit-analyzed', style: 'action' as const },
+        
+        // Document Management
+        { id: 'dms-collect-to-collected', source: 'dms-collect', target: 'dms-collected' },
+        { id: 'dms-collected-to-verify', source: 'dms-collected', target: 'dms-verify' },
+        { id: 'dms-verify-to-verified', source: 'dms-verify', target: 'dms-verified', style: 'action' as const },
+        
+        // Underwriting
+        { id: 'underwriting-review-to-reviewed', source: 'underwriting-review', target: 'underwriting-reviewed' },
+        { id: 'underwriting-reviewed-to-approve', source: 'underwriting-reviewed', target: 'underwriting-approve' },
+        { id: 'underwriting-approve-to-approved', source: 'underwriting-approve', target: 'underwriting-approved', style: 'action' as const },
+        
+        // CW/PMF
+        { id: 'cwpmf-stage-to-staged', source: 'cwpmf-stage', target: 'cwpmf-staged' },
+        
+        // CW/FLUME
+        { id: 'cwflume-accept-to-accepted', source: 'cwflume-accept', target: 'cwflume-accepted', style: 'action' as const },
+        { id: 'cwflume-accepted-to-finalize', source: 'cwflume-accepted', target: 'cwflume-finalize' },
+        { id: 'cwflume-finalize-to-finalized', source: 'cwflume-finalize', target: 'cwflume-finalized', style: 'action' as const },
+        
+        // Closing
+        { id: 'closing-prepare-to-prepared', source: 'closing-prepare', target: 'closing-prepared' },
+        { id: 'closing-prepared-to-close', source: 'closing-prepared', target: 'closing-close' },
+        { id: 'closing-close-to-closed', source: 'closing-close', target: 'closing-closed', style: 'action' as const }
+      ]
+    };
+    return demoData;
+  }, []);
 
   const initialNodes: Node[] = useMemo(() => generateNodes(workflowData), [workflowData]);
   const initialEdges: Edge[] = useMemo(() => generateEdges(workflowData), [workflowData]);
