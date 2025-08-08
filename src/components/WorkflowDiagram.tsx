@@ -379,8 +379,8 @@ const WorkflowDiagram = () => {
           height: containerHeight,
           zIndex: 0
         },
-        selectable: false,
-        draggable: false,
+        selectable: true,
+        draggable: true,  // Make parent containers draggable
       });
 
       // Create sub nodes
@@ -502,7 +502,7 @@ const WorkflowDiagram = () => {
         {
           id: 'lsa',
           label: 'LSA',
-          position: { x: 50, y: 50 },
+          position: { x: 50, y: 50 },  // Top row - position 1
           subNodes: [
             { id: 'commitment', label: 'Commitment' }
           ],
@@ -521,7 +521,7 @@ const WorkflowDiagram = () => {
         {
           id: 'los',
           label: 'LOS',
-          position: { x: 450, y: 50 },
+          position: { x: 450, y: 300 },  // Bottom row - position 2
           subNodes: [
             { id: 'application', label: 'Application' }
           ],
@@ -540,7 +540,7 @@ const WorkflowDiagram = () => {
         {
           id: 'credit',
           label: 'Credit Bureau',
-          position: { x: 850, y: 50 },
+          position: { x: 850, y: 50 },  // Top row - position 3
           subNodes: [
             { id: 'credit-check', label: 'Credit Check' }
           ],
@@ -559,7 +559,7 @@ const WorkflowDiagram = () => {
         {
           id: 'dms',
           label: 'Document Mgmt',
-          position: { x: 1250, y: 50 },
+          position: { x: 1250, y: 300 },  // Bottom row - position 4
           subNodes: [
             { id: 'documents', label: 'Documents' }
           ],
@@ -578,7 +578,7 @@ const WorkflowDiagram = () => {
         {
           id: 'underwriting',
           label: 'Underwriting',
-          position: { x: 50, y: 300 },
+          position: { x: 1650, y: 50 },  // Top row - position 5
           subNodes: [
             { id: 'risk-assessment', label: 'Risk Assessment' }
           ],
@@ -597,7 +597,7 @@ const WorkflowDiagram = () => {
         {
           id: 'cwpmf',
           label: 'CW/PMF',
-          position: { x: 450, y: 300 },
+          position: { x: 2050, y: 300 },  // Bottom row - position 6
           subNodes: [
             { id: 'hypo-loan', label: 'Hypo Loan F' }
           ],
@@ -611,7 +611,7 @@ const WorkflowDiagram = () => {
         {
           id: 'cwflume',
           label: 'CW/FLUME',
-          position: { x: 850, y: 300 },
+          position: { x: 2450, y: 50 },  // Top row - position 7
           subNodes: [
             { id: 'commitment', label: 'Commitment' }
           ],
@@ -630,7 +630,7 @@ const WorkflowDiagram = () => {
         {
           id: 'closing',
           label: 'Closing System',
-          position: { x: 1250, y: 300 },
+          position: { x: 2850, y: 300 },  // Bottom row - position 8
           subNodes: [
             { id: 'settlement', label: 'Settlement' }
           ],
@@ -648,12 +648,10 @@ const WorkflowDiagram = () => {
         }
       ],
       connections: [
-        // Row 1 connections (LSA -> LOS -> Credit -> DMS)
+        // Zig-zag pattern connections: 1->2->3->4->5->6->7->8
         { id: 'lsa-accepted-to-los-submit', source: 'lsa-accepted', target: 'los-submit', style: 'action' as const },
         { id: 'los-validated-to-credit-pull', source: 'los-validated', target: 'credit-pull', style: 'action' as const },
         { id: 'credit-analyzed-to-dms-collect', source: 'credit-analyzed', target: 'dms-collect', style: 'action' as const },
-        
-        // Row 2 connections (Underwriting -> CW/PMF -> CW/FLUME -> Closing)
         { id: 'dms-verified-to-underwriting-review', source: 'dms-verified', target: 'underwriting-review', style: 'action' as const },
         { id: 'underwriting-approved-to-cwpmf-stage', source: 'underwriting-approved', target: 'cwpmf-stage', style: 'action' as const },
         { id: 'cwpmf-staged-to-cwflume-accept', source: 'cwpmf-staged', target: 'cwflume-accept', style: 'action' as const },
