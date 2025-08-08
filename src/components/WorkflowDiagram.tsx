@@ -117,17 +117,16 @@ const WorkflowDiagram = () => {
   const containerWidth = 350;
   const containerHeight = 200;
   
-  // Layout configuration
+  // Layout configuration to match Figma design
   const layoutConfig = {
     subNodeY: 70,
-    statusNodeY: 100,
-    eventNodeY: 130,
+    statusNodeY: 100,    // Status nodes (Create, Accept, Stage) in middle row
+    eventNodeY: 130,     // Event nodes (created, accepted, staged) in bottom row
     subNodeStartX: 20,
     descriptiveTextX: 120,
-    statusNodeStartX: 30,
-    statusNodeSpacing: 110,
-    eventNodeStartX: 25,
-    eventNodeSpacing: 175,
+    eventNodeStartX: 25,     // Start position for event nodes
+    eventNodeSpacing: 230,   // Space between event nodes
+    statusNodeOffsetX: 115,  // Offset to center status nodes between events
   };
 
   // TODO: Replace with actual backend API call
@@ -254,14 +253,17 @@ const WorkflowDiagram = () => {
         });
       });
 
-      // Create status nodes
+      // Create status nodes - positioned between event nodes
       app.statusNodes.forEach((statusNode, index) => {
         const nodeType = statusNode.label.toLowerCase() === 'create' ? 'step' : 'action';
+        // Position status nodes between event nodes (centered in gaps)
+        const xPosition = layoutConfig.eventNodeStartX + layoutConfig.statusNodeOffsetX + (index * layoutConfig.eventNodeSpacing);
+        
         nodes.push({
           id: `${app.id}-${statusNode.id}`,
           type: nodeType,
           position: { 
-            x: layoutConfig.statusNodeStartX + (index * layoutConfig.statusNodeSpacing), 
+            x: xPosition, 
             y: layoutConfig.statusNodeY 
           },
           data: { label: statusNode.label, icon: statusNode.icon },
@@ -270,7 +272,7 @@ const WorkflowDiagram = () => {
         });
       });
 
-      // Create event nodes
+      // Create event nodes - positioned in bottom row with proper spacing
       app.events.forEach((event, index) => {
         nodes.push({
           id: `${app.id}-${event.id}`,
