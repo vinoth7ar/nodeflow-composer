@@ -15,8 +15,40 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
-// Custom Node Components
-const WorkflowContainerNode = ({ data }: { data: any }) => (
+// TypeScript Interfaces for Component Props
+interface WorkflowContainerData {
+  width: number;
+  height: number;
+  label: string;
+}
+
+interface ContainerData {
+  width: number;
+  height: number;
+  label: string;
+}
+
+interface WorkflowNodeData {
+  label: string;
+  status?: string;
+}
+
+interface ActionNodeData {
+  label: string;
+  icon?: string;
+}
+
+interface TextNodeData {
+  label: string;
+}
+
+interface StepNodeData {
+  label: string;
+  icon?: string;
+}
+
+// Custom Node Components with proper TypeScript types
+const WorkflowContainerNode: React.FC<{ data: WorkflowContainerData }> = ({ data }) => (
   <div className="workflow-container-inner" style={{ 
     width: data.width, 
     height: data.height, 
@@ -31,13 +63,13 @@ const WorkflowContainerNode = ({ data }: { data: any }) => (
   </div>
 );
 
-const ContainerNode = ({ data }: { data: any }) => (
+const ContainerNode: React.FC<{ data: ContainerData }> = ({ data }) => (
   <div className="workflow-container" style={{ width: data.width, height: data.height, padding: '16px' }}>
     <div className="workflow-header">{data.label}</div>
   </div>
 );
 
-const WorkflowNode = ({ data }: { data: any }) => (
+const WorkflowNode: React.FC<{ data: WorkflowNodeData }> = ({ data }) => (
   <>
     <Handle type="target" position={Position.Left} style={{ opacity: 0 }} />
     <div className={`workflow-node ${data.status || ''}`}>
@@ -47,7 +79,7 @@ const WorkflowNode = ({ data }: { data: any }) => (
   </>
 );
 
-const ActionNode = ({ data }: { data: any }) => (
+const ActionNode: React.FC<{ data: ActionNodeData }> = ({ data }) => (
   <>
     <Handle type="target" position={Position.Left} style={{ opacity: 0 }} />
     <div className="workflow-action">
@@ -58,7 +90,7 @@ const ActionNode = ({ data }: { data: any }) => (
   </>
 );
 
-const TextNode = ({ data }: { data: any }) => (
+const TextNode: React.FC<{ data: TextNodeData }> = ({ data }) => (
   <>
     <Handle type="target" position={Position.Top} style={{ opacity: 0 }} />
     <div className="workflow-action-text">
@@ -68,7 +100,7 @@ const TextNode = ({ data }: { data: any }) => (
   </>
 );
 
-const StepNode = ({ data }: { data: any }) => (
+const StepNode: React.FC<{ data: StepNodeData }> = ({ data }) => (
   <>
     <Handle type="target" position={Position.Left} style={{ opacity: 0 }} />
     <div className="workflow-step-node">
@@ -127,7 +159,7 @@ interface WorkflowData {
   connections: WorkflowConnection[];
 }
 
-const WorkflowDiagram = () => {
+const WorkflowDiagram: React.FC = () => {
   // Container configuration - increased for better spacing
   const containerWidth = 450;
   const containerHeight = 240;
