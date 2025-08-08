@@ -52,6 +52,20 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				workflow: {
+					container: 'hsl(var(--workflow-container))',
+					border: 'hsl(var(--workflow-border))',
+					node: 'hsl(var(--workflow-node))',
+					'node-border': 'hsl(var(--workflow-node-border))',
+					accepted: 'hsl(var(--workflow-accepted))',
+					'accepted-border': 'hsl(var(--workflow-accepted-border))',
+					created: 'hsl(var(--workflow-created))',
+					'created-border': 'hsl(var(--workflow-created-border))',
+					staged: 'hsl(var(--workflow-staged))',
+					'staged-border': 'hsl(var(--workflow-staged-border))',
+					action: 'hsl(var(--workflow-action))',
+					'action-foreground': 'hsl(var(--workflow-action-foreground))'
+				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
