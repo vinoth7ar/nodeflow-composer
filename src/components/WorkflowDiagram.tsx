@@ -16,6 +16,21 @@ import {
 import '@xyflow/react/dist/style.css';
 
 // Custom Node Components
+const WorkflowContainerNode = ({ data }: { data: any }) => (
+  <div className="workflow-container-inner" style={{ 
+    width: data.width, 
+    height: data.height, 
+    border: '2px solid hsl(var(--primary))', 
+    borderRadius: '8px',
+    backgroundColor: 'hsl(var(--background))',
+    padding: '8px'
+  }}>
+    <div className="workflow-header" style={{ fontSize: '12px', fontWeight: 'bold', color: 'hsl(var(--primary))' }}>
+      {data.label}
+    </div>
+  </div>
+);
+
 const ContainerNode = ({ data }: { data: any }) => (
   <div className="workflow-container" style={{ width: data.width, height: data.height, padding: '16px' }}>
     <div className="workflow-header">{data.label}</div>
@@ -66,6 +81,7 @@ const StepNode = ({ data }: { data: any }) => (
 
 const nodeTypes: NodeTypes = {
   container: ContainerNode,
+  workflowContainer: WorkflowContainerNode,
   workflow: WorkflowNode,
   action: ActionNode,
   text: TextNode,
@@ -116,17 +132,21 @@ const WorkflowDiagram = () => {
   // Container configuration
   const containerWidth = 350;
   const containerHeight = 200;
+  const workflowContainerWidth = 300;
+  const workflowContainerHeight = 100;
   
   // Layout configuration to match Figma design
   const layoutConfig = {
     subNodeY: 70,
-    statusNodeY: 100,    // Status nodes (Create, Accept, Stage) in middle row
-    eventNodeY: 130,     // Event nodes (created, accepted, staged) in bottom row
+    workflowContainerY: 90,  // Position of workflow container
+    statusNodeY: 20,         // Relative to workflow container
+    eventNodeY: 50,          // Relative to workflow container
     subNodeStartX: 20,
     descriptiveTextX: 120,
-    eventNodeStartX: 25,     // Start position for event nodes
-    eventNodeSpacing: 230,   // Space between event nodes
-    statusNodeOffsetX: 115,  // Offset to center status nodes between events
+    workflowContainerX: 25,  // Position of workflow container
+    eventNodeStartX: 15,     // Relative to workflow container
+    eventNodeSpacing: 120,   // Reduced spacing for smaller container
+    statusNodeOffsetX: 60,   // Offset to center status nodes between events
   };
 
   // TODO: Replace with actual backend API call
@@ -253,10 +273,35 @@ const WorkflowDiagram = () => {
         });
       });
 
-      // Create status nodes - positioned between event nodes
+      // Create workflow container only if app has events or status nodes
+      if (app.events.length > 0 || app.statusNodes.length > 0) {
+        nodes.push({
+          id: `${app.id}-workflow-container`,
+          type: 'workflowContainer',
+          position: { 
+            x: layoutConfig.workflowContainerX, 
+            y: layoutConfig.workflowContainerY 
+          },
+          data: { 
+            label: 'Workflow',
+            width: workflowContainerWidth,
+            height: workflowContainerHeight
+          },
+          style: { 
+            width: workflowContainerWidth, 
+            height: workflowContainerHeight,
+            zIndex: 1
+          },
+          parentId: `${app.id}-container`,
+          extent: 'parent',
+          selectable: false,
+          draggable: false,
+        });
+      }
+
+      // Create status nodes - positioned inside workflow container
       app.statusNodes.forEach((statusNode, index) => {
         const nodeType = statusNode.label.toLowerCase() === 'create' ? 'step' : 'action';
-        // Position status nodes between event nodes (centered in gaps)
         const xPosition = layoutConfig.eventNodeStartX + layoutConfig.statusNodeOffsetX + (index * layoutConfig.eventNodeSpacing);
         
         nodes.push({
@@ -267,12 +312,12 @@ const WorkflowDiagram = () => {
             y: layoutConfig.statusNodeY 
           },
           data: { label: statusNode.label, icon: statusNode.icon },
-          parentId: `${app.id}-container`,
+          parentId: `${app.id}-workflow-container`,
           extent: 'parent',
         });
       });
 
-      // Create event nodes - positioned in bottom row with proper spacing
+      // Create event nodes - positioned inside workflow container
       app.events.forEach((event, index) => {
         nodes.push({
           id: `${app.id}-${event.id}`,
@@ -282,7 +327,7 @@ const WorkflowDiagram = () => {
             y: layoutConfig.eventNodeY 
           },
           data: { label: event.label, status: event.status },
-          parentId: `${app.id}-container`,
+          parentId: `${app.id}-workflow-container`,
           extent: 'parent',
         });
       });
