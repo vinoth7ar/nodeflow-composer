@@ -137,8 +137,8 @@ const WorkflowDiagram = () => {
   const layoutConfig = {
     subNodeY: 70,
     workflowContainerY: 90,  // Position of workflow container
-    statusNodeY: 20,         // Relative to workflow container
-    eventNodeY: 50,          // Relative to workflow container
+    statusNodeY: 50,         // Relative to workflow container (swapped)
+    eventNodeY: 20,          // Relative to workflow container (swapped)
     subNodeStartX: 20,
     descriptiveTextX: 120,
     workflowContainerX: 25,  // Position of workflow container
