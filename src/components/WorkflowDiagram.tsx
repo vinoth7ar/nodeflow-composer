@@ -720,16 +720,27 @@ const WorkflowDiagram = () => {
   }, []);
 
   const handleStepClick = useCallback((nodeId: string) => {
-    console.log('Focusing on node:', nodeId);
-    console.log('Available nodes:', nodes.map(n => n.id));
+    console.log('=== STEP CLICK DEBUG ===');
+    console.log('Requested nodeId:', nodeId);
+    console.log('Total available nodes:', nodes.length);
+    console.log('All node IDs:', nodes.map(n => n.id).sort());
+    console.log('Looking for exact match...');
+    
     setCurrentStep(nodeId);
     
     if (reactFlowInstance) {
       // Find the target node
       const targetNode = nodes.find(node => node.id === nodeId);
-      console.log('Found target node:', targetNode);
+      console.log('Found target node:', targetNode ? targetNode.id : 'NOT FOUND');
       
       if (targetNode) {
+        console.log('Target node details:', {
+          id: targetNode.id,
+          position: targetNode.position,
+          parentId: targetNode.parentId,
+          type: targetNode.type
+        });
+        
         // Calculate absolute position for nested nodes
         let absoluteX = targetNode.position.x;
         let absoluteY = targetNode.position.y;
@@ -740,9 +751,15 @@ const WorkflowDiagram = () => {
           if (parentNode) {
             absoluteX += parentNode.position.x;
             absoluteY += parentNode.position.y;
-            console.log('Parent node found:', parentNode.id, 'Absolute position:', absoluteX, absoluteY);
+            console.log('Parent node found:', {
+              parentId: parentNode.id,
+              parentPosition: parentNode.position,
+              finalAbsolutePosition: { x: absoluteX, y: absoluteY }
+            });
           }
         }
+        
+        console.log('Centering on position:', { x: absoluteX + 25, y: absoluteY + 25 });
         
         // Center the view on the specific node with better positioning
         reactFlowInstance.setCenter(
@@ -751,10 +768,15 @@ const WorkflowDiagram = () => {
           { zoom: 1.5, duration: 1000 }
         );
       } else {
-        console.error('Node not found:', nodeId);
-        console.log('Did you mean one of these?', nodes.filter(n => n.id.includes(nodeId.split('-')[0])).map(n => n.id));
+        console.error('❌ Node not found:', nodeId);
+        console.log('Possible matches:', nodes.filter(n => 
+          n.id.includes(nodeId) || 
+          nodeId.includes(n.id.split('-')[0]) ||
+          n.id.split('-').some(part => nodeId.includes(part))
+        ).map(n => n.id));
       }
     }
+    console.log('=== END DEBUG ===');
   }, [reactFlowInstance, nodes, setCurrentStep]);
 
 

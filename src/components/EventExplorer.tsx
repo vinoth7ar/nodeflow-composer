@@ -25,7 +25,7 @@ const EventExplorer: React.FC<EventExplorerProps> = ({ onStepClick, onClose, cur
   const [showLegend, setShowLegend] = useState(true);
   const [showModifiedEntities, setShowModifiedEntities] = useState(false);
 
-  // Complete workflow steps data matching the actual flow diagram
+  // Complete workflow steps data matching the exact node IDs in WorkflowDiagram
   const workflowSteps: WorkflowStep[] = [
     {
       id: 'create-lsa',
