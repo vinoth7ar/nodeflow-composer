@@ -40,7 +40,7 @@ const ContainerNode = ({ data }: { data: any }) => (
 const WorkflowNode = ({ data }: { data: any }) => (
   <>
     <Handle type="target" position={Position.Left} style={{ opacity: 0 }} />
-    <div className={`workflow-node ${data.status || ''}`}>
+    <div className={`workflow-node ${data.status || ''} ${data.selected ? 'selected' : ''}`}>
       {data.label}
     </div>
     <Handle type="source" position={Position.Right} style={{ opacity: 0 }} />
@@ -50,7 +50,7 @@ const WorkflowNode = ({ data }: { data: any }) => (
 const ActionNode = ({ data }: { data: any }) => (
   <>
     <Handle type="target" position={Position.Left} style={{ opacity: 0 }} />
-    <div className="workflow-action">
+    <div className={`workflow-action ${data.selected ? 'selected' : ''}`}>
       {data.icon && <span>{data.icon}</span>}
       {data.label}
     </div>
@@ -71,7 +71,7 @@ const TextNode = ({ data }: { data: any }) => (
 const StepNode = ({ data }: { data: any }) => (
   <>
     <Handle type="target" position={Position.Left} style={{ opacity: 0 }} />
-    <div className="workflow-step-node">
+    <div className={`workflow-step-node ${data.selected ? 'selected' : ''}`}>
       {data.icon && <span style={{ marginRight: '4px' }}>{data.icon}</span>}
       {data.label}
     </div>
@@ -722,11 +722,18 @@ const WorkflowDiagram = () => {
   const handleStepClick = useCallback((nodeId: string) => {
     console.log('=== STEP CLICK DEBUG ===');
     console.log('Requested nodeId:', nodeId);
-    console.log('Total available nodes:', nodes.length);
-    console.log('All node IDs:', nodes.map(n => n.id).sort());
-    console.log('Looking for exact match...');
-    
     setCurrentStep(nodeId);
+    
+    // Update nodes to show selection
+    setNodes((prevNodes) => 
+      prevNodes.map((node) => ({
+        ...node,
+        data: {
+          ...node.data,
+          selected: node.id === nodeId
+        }
+      }))
+    );
     
     if (reactFlowInstance) {
       // Find the target node
@@ -777,7 +784,7 @@ const WorkflowDiagram = () => {
       }
     }
     console.log('=== END DEBUG ===');
-  }, [reactFlowInstance, nodes, setCurrentStep]);
+  }, [reactFlowInstance, nodes, setCurrentStep, setNodes]);
 
 
   return (
