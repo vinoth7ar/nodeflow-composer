@@ -721,11 +721,14 @@ const WorkflowDiagram = () => {
 
   const handleStepClick = useCallback((nodeId: string) => {
     console.log('Focusing on node:', nodeId);
+    console.log('Available nodes:', nodes.map(n => n.id));
     setCurrentStep(nodeId);
     
     if (reactFlowInstance) {
       // Find the target node
       const targetNode = nodes.find(node => node.id === nodeId);
+      console.log('Found target node:', targetNode);
+      
       if (targetNode) {
         // Calculate absolute position for nested nodes
         let absoluteX = targetNode.position.x;
@@ -737,6 +740,7 @@ const WorkflowDiagram = () => {
           if (parentNode) {
             absoluteX += parentNode.position.x;
             absoluteY += parentNode.position.y;
+            console.log('Parent node found:', parentNode.id, 'Absolute position:', absoluteX, absoluteY);
           }
         }
         
@@ -746,6 +750,9 @@ const WorkflowDiagram = () => {
           absoluteY + 25,
           { zoom: 1.5, duration: 1000 }
         );
+      } else {
+        console.error('Node not found:', nodeId);
+        console.log('Did you mean one of these?', nodes.filter(n => n.id.includes(nodeId.split('-')[0])).map(n => n.id));
       }
     }
   }, [reactFlowInstance, nodes, setCurrentStep]);
