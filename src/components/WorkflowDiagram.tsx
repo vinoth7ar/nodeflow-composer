@@ -130,7 +130,8 @@ interface WorkflowData {
 
 const WorkflowDiagram = () => {
   const [showEventExplorer, setShowEventExplorer] = useState(true);
-  const reactFlowInstance = useRef<ReactFlowInstance | null>(null);
+  const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance | null>(null);
+  const [currentStep, setCurrentStep] = useState<string>('');
   
   // Container configuration - increased heights for better content accommodation
   const containerWidth = 350;
@@ -715,53 +716,28 @@ const WorkflowDiagram = () => {
   );
 
   const onInit = useCallback((instance: ReactFlowInstance) => {
-    reactFlowInstance.current = instance;
+    setReactFlowInstance(instance);
   }, []);
 
   const handleStepClick = useCallback((nodeId: string) => {
-    if (!reactFlowInstance.current) return;
-
-    const node = nodes.find(n => n.id === nodeId);
-    if (node) {
-      // Focus on the specific node
-      reactFlowInstance.current.setCenter(
-        node.position.x + (node.style?.width as number || 0) / 2,
-        node.position.y + (node.style?.height as number || 0) / 2,
-        { zoom: 1.2, duration: 800 }
-      );
-
-      // Highlight the node temporarily
-      setNodes((prevNodes) =>
-        prevNodes.map((n) => ({
-          ...n,
-          style: {
-            ...n.style,
-            ...(n.id === nodeId ? { 
-              boxShadow: '0 0 20px hsl(var(--primary))',
-              transform: 'scale(1.05)',
-              transition: 'all 0.3s ease',
-              zIndex: 1000 
-            } : {})
-          }
-        }))
-      );
-
-      // Remove highlight after 2 seconds
-      setTimeout(() => {
-        setNodes((prevNodes) =>
-          prevNodes.map((n) => ({
-            ...n,
-            style: {
-              ...n.style,
-              boxShadow: n.id === nodeId ? undefined : n.style?.boxShadow,
-              transform: n.id === nodeId ? undefined : n.style?.transform,
-              zIndex: n.id === nodeId ? undefined : n.style?.zIndex,
-            }
-          }))
+    console.log('Focusing on node:', nodeId);
+    if (reactFlowInstance) {
+      // Find the target node
+      const targetNode = nodes.find(node => node.id === nodeId);
+      if (targetNode) {
+        // Center the view on the specific node
+        reactFlowInstance.setCenter(
+          targetNode.position.x + (targetNode.width || 150) / 2,
+          targetNode.position.y + (targetNode.height || 50) / 2,
+          { zoom: 1.2, duration: 800 }
         );
-      }, 2000);
+        
+        // Update current step without modifying nodes
+        setCurrentStep(nodeId);
+      }
     }
-  }, [nodes, setNodes]);
+  }, [reactFlowInstance, nodes]);
+
 
   return (
     <div style={{ 
@@ -805,6 +781,7 @@ const WorkflowDiagram = () => {
           <EventExplorer 
             onStepClick={handleStepClick}
             onClose={() => setShowEventExplorer(false)}
+            currentStep={currentStep}
           />
         </div>
       )}

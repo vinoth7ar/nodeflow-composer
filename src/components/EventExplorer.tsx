@@ -16,11 +16,12 @@ interface WorkflowStep {
 interface EventExplorerProps {
   onStepClick: (nodeId: string) => void;
   onClose?: () => void;
+  currentStep?: string;
 }
 
-const EventExplorer: React.FC<EventExplorerProps> = ({ onStepClick, onClose }) => {
+const EventExplorer: React.FC<EventExplorerProps> = ({ onStepClick, onClose, currentStep }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStepNumber, setCurrentStepNumber] = useState(1);
   const [showLegend, setShowLegend] = useState(true);
   const [showModifiedEntities, setShowModifiedEntities] = useState(false);
 
@@ -129,24 +130,24 @@ const EventExplorer: React.FC<EventExplorerProps> = ({ onStepClick, onClose }) =
 
   const handleStepClick = (step: WorkflowStep) => {
     onStepClick(step.nodeId);
-    setCurrentStep(step.number);
+    setCurrentStepNumber(step.number);
   };
 
   const handleNext = () => {
-    if (currentStep < totalSteps) {
-      const nextStep = workflowSteps.find(s => s.number === currentStep + 1);
+    if (currentStepNumber < totalSteps) {
+      const nextStep = workflowSteps.find(s => s.number === currentStepNumber + 1);
       if (nextStep) {
-        setCurrentStep(currentStep + 1);
+        setCurrentStepNumber(currentStepNumber + 1);
         onStepClick(nextStep.nodeId);
       }
     }
   };
 
   const handlePrevious = () => {
-    if (currentStep > 1) {
-      const prevStep = workflowSteps.find(s => s.number === currentStep - 1);
+    if (currentStepNumber > 1) {
+      const prevStep = workflowSteps.find(s => s.number === currentStepNumber - 1);
       if (prevStep) {
-        setCurrentStep(currentStep - 1);
+        setCurrentStepNumber(currentStepNumber - 1);
         onStepClick(prevStep.nodeId);
       }
     }
@@ -184,7 +185,7 @@ const EventExplorer: React.FC<EventExplorerProps> = ({ onStepClick, onClose }) =
             {filteredSteps.slice(0, maxVisibleSteps).map((step) => (
               <div
                 key={step.id}
-                className={`step-item ${step.status} ${currentStep === step.number ? 'current' : ''}`}
+                className={`step-item ${step.status} ${currentStep === step.nodeId ? 'current' : ''}`}
                 onClick={() => handleStepClick(step)}
               >
                 <div className="step-content">
@@ -211,7 +212,7 @@ const EventExplorer: React.FC<EventExplorerProps> = ({ onStepClick, onClose }) =
               variant="outline"
               size="sm"
               onClick={handlePrevious}
-              disabled={currentStep === 1}
+              disabled={currentStepNumber === 1}
               className="nav-button"
             >
               <ChevronLeft size={16} />
@@ -221,7 +222,7 @@ const EventExplorer: React.FC<EventExplorerProps> = ({ onStepClick, onClose }) =
               variant="default"
               size="sm"
               onClick={handleNext}
-              disabled={currentStep === totalSteps}
+              disabled={currentStepNumber === totalSteps}
               className="nav-button next"
             >
               Next
@@ -285,11 +286,11 @@ const EventExplorer: React.FC<EventExplorerProps> = ({ onStepClick, onClose }) =
               <h4 className="section-title">Journey Tracker</h4>
             </div>
             <div className="tracker-content">
-              <div className="progress-info">Event {currentStep} of {totalSteps}</div>
+              <div className="progress-info">Event {currentStepNumber} of {totalSteps}</div>
               <div className="progress-bar">
                 <div
                   className="progress-fill"
-                  style={{ width: `${(currentStep / totalSteps) * 100}%` }}
+                  style={{ width: `${(currentStepNumber / totalSteps) * 100}%` }}
                 ></div>
               </div>
             </div>
