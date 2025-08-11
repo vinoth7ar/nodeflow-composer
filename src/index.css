@@ -1,314 +1,240 @@
-/* CSS Reset */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    --background: 210 14% 95%;
+    --foreground: 220 12% 20%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 12% 20%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 12% 20%;
+
+    --primary: 220 12% 20%;
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 210 10% 92%;
+    --secondary-foreground: 220 12% 20%;
+
+    --muted: 210 10% 92%;
+    --muted-foreground: 220 8% 50%;
+
+    --accent: 145 73% 42%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 220 13% 85%;
+    --input: 220 13% 85%;
+    --ring: 220 12% 20%;
+
+    --radius: 0.375rem;
+
+    /* Workflow specific colors */
+    --workflow-container: 220 13% 91%;
+    --workflow-border: 220 13% 75%;
+    --workflow-node: 0 0% 100%;
+    --workflow-node-border: 220 13% 85%;
+    --workflow-accepted: 145 73% 95%;
+    --workflow-accepted-border: 145 73% 42%;
+    --workflow-created: 220 13% 91%;
+    --workflow-created-border: 220 13% 65%;
+    --workflow-staged: 220 13% 91%;
+    --workflow-staged-border: 220 13% 65%;
+    --workflow-action: 145 73% 42%;
+    --workflow-action-foreground: 0 0% 98%;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 220 25% 12%;
+    --foreground: 210 40% 98%;
+
+    --card: 220 20% 15%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 220 20% 15%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 220 25% 12%;
+
+    --secondary: 220 20% 18%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 220 20% 18%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 145 73% 42%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 220 20% 25%;
+    --input: 220 20% 25%;
+    --ring: 212.7 26.8% 83.9%;
+    
+    /* Dark mode workflow colors */
+    --workflow-container: 220 20% 18%;
+    --workflow-border: 220 20% 35%;
+    --workflow-node: 220 20% 15%;
+    --workflow-node-border: 220 20% 25%;
+    --workflow-accepted: 145 73% 15%;
+    --workflow-accepted-border: 145 73% 42%;
+    --workflow-created: 220 20% 18%;
+    --workflow-created-border: 220 20% 45%;
+    --workflow-staged: 220 20% 18%;
+    --workflow-staged-border: 220 20% 45%;
+    --workflow-action: 145 73% 42%;
+    --workflow-action-foreground: 0 0% 98%;
+    
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
 }
 
-/* Root Variables */
-:root {
-  --background: #f5f5f5;
-  --foreground: #1f2937;
-  --card: #ffffff;
-  --card-foreground: #1f2937;
-  --primary: #2563eb;
-  --primary-foreground: #ffffff;
-  --secondary: #f3f4f6;
-  --secondary-foreground: #1f2937;
-  --muted: #f3f4f6;
-  --muted-foreground: #6b7280;
-  --accent: #059669;
-  --accent-foreground: #ffffff;
-  --border: #d1d5db;
-  --input: #d1d5db;
-  --ring: #2563eb;
+@layer base {
+  * {
+    @apply border-border;
+  }
 
-  /* Workflow specific colors */
-  --workflow-container: #e5e7eb;
-  --workflow-border: #9ca3af;
-  --workflow-node: #ffffff;
-  --workflow-node-border: #d1d5db;
-  --workflow-accepted: #ecfdf5;
-  --workflow-accepted-border: #059669;
-  --workflow-created: #e5e7eb;
-  --workflow-created-border: #6b7280;
-  --workflow-staged: #e5e7eb;
-  --workflow-staged-border: #6b7280;
-  --workflow-action: #059669;
-  --workflow-action-foreground: #ffffff;
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
 }
 
-.dark {
-  --background: #111827;
-  --foreground: #f9fafb;
-  --card: #1f2937;
-  --card-foreground: #f9fafb;
-  --primary: #3b82f6;
-  --primary-foreground: #ffffff;
-  --secondary: #374151;
-  --secondary-foreground: #f9fafb;
-  --muted: #374151;
-  --muted-foreground: #9ca3af;
-  --accent: #10b981;
-  --accent-foreground: #ffffff;
-  --border: #374151;
-  --input: #374151;
-  --ring: #3b82f6;
-
-  --workflow-container: #374151;
-  --workflow-border: #6b7280;
-  --workflow-node: #1f2937;
-  --workflow-node-border: #374151;
-  --workflow-accepted: #064e3b;
-  --workflow-accepted-border: #10b981;
-  --workflow-created: #374151;
-  --workflow-created-border: #9ca3af;
-  --workflow-staged: #374151;
-  --workflow-staged-border: #9ca3af;
-  --workflow-action: #10b981;
-  --workflow-action-foreground: #ffffff;
-}
-
-/* Base Styles */
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-  background-color: var(--background);
-  color: var(--foreground);
-  margin: 0;
-  padding: 0;
-}
-
-/* Main Application Container */
-.workflow-app {
-  width: 100vw;
-  height: 100vh;
-  background-color: var(--background);
-}
-
-/* Workflow Diagram Styles - Based on UX Design */
-
-/* React Flow Base */
+/* React Flow Workflow Styles */
 .react-flow {
-  background: var(--background);
-  width: 100%;
-  height: 100%;
+  background: hsl(var(--background));
 }
 
 .react-flow__node {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
 }
 
-/* Main Application Container */
 .workflow-container {
-  background: var(--card);
-  border: 2px solid var(--border);
-  border-radius: 12px;
-  position: relative;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  overflow: visible;
-}
-
-/* Container Header with Dark Background */
-.workflow-header {
-  background: #2d3748;
-  color: white;
-  padding: 8px 16px;
-  font-size: 14px;
-  font-weight: 600;
-  position: absolute;
-  top: -20px;
-  left: 0;
-  border-radius: 8px 8px 0 0;
-  min-width: 120px;
-  text-align: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* Inner Workflow Container */
-.workflow-container-inner {
-  border: 2px dashed var(--border);
+  background: hsl(var(--workflow-container));
+  border: 2px solid hsl(var(--workflow-border));
   border-radius: 8px;
-  background: transparent;
   position: relative;
 }
 
-/* Workflow Process Title */
-.workflow-process-title {
-  background: var(--card);
-  color: var(--foreground);
+.workflow-header {
+  color: hsl(var(--foreground));
   padding: 4px 12px;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
   position: absolute;
-  top: 8px;
-  left: 16px;
-  border: 1px solid var(--border);
-  border-radius: 4px;
+  top: -10px;
+  left: 12px;
 }
 
-/* Status Circle Nodes (created, accepted, staged, etc.) */
 .workflow-node {
-  background: var(--muted);
-  border: 2px solid var(--border);
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
+  background: hsl(var(--workflow-node));
+  border: 1px solid hsl(var(--workflow-node-border));
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
-  font-weight: 500;
-  color: var(--muted-foreground);
-  text-align: center;
-  line-height: 1.2;
+  min-width: 80px;
+  min-height: 32px;
 }
 
-/* Active/Accepted status nodes */
 .workflow-node.accepted {
-  background: var(--workflow-accepted);
-  border-color: var(--workflow-accepted-border);
-  color: var(--workflow-accepted-border);
-  font-weight: 600;
+  background: hsl(var(--workflow-accepted));
+  border-color: hsl(var(--workflow-accepted-border));
+  color: hsl(var(--workflow-accepted-border));
+  font-weight: 500;
 }
 
 .workflow-node.created {
-  background: var(--workflow-accepted);
-  border-color: var(--workflow-accepted-border);
-  color: var(--workflow-accepted-border);
-  font-weight: 600;
+  background: hsl(var(--workflow-created));
+  border-color: hsl(var(--workflow-created-border));
+  color: hsl(var(--foreground));
 }
 
-.workflow-node.staged,
-.workflow-node.submitted,
-.workflow-node.validated,
-.workflow-node.pulled,
-.workflow-node.analyzed,
-.workflow-node.collected,
-.workflow-node.verified,
-.workflow-node.reviewed,
-.workflow-node.approved,
-.workflow-node.finalized,
-.workflow-node.prepared,
-.workflow-node.closed {
-  background: var(--muted);
-  border-color: var(--border);
-  color: var(--muted-foreground);
+.workflow-node.staged {
+  background: hsl(var(--workflow-staged));
+  border-color: hsl(var(--workflow-staged-border));
+  color: hsl(var(--foreground));
 }
 
-/* Action Buttons (numbered circles) */
 .workflow-action {
-  background: var(--primary);
-  color: var(--primary-foreground);
+  background: hsl(var(--workflow-action));
+  color: hsl(var(--workflow-action-foreground));
   border: none;
-  border-radius: 50%;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* Step Node (numbered process steps) */
-.workflow-step-node {
-  background: var(--primary);
-  color: var(--primary-foreground);
-  border: none;
-  border-radius: 50%;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: 600;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* Text Labels and Descriptions */
-.workflow-action-text {
-  background: transparent;
-  color: var(--foreground);
-  border: none;
-  padding: 4px 8px;
-  font-size: 12px;
-  font-weight: 400;
-  text-align: left;
-  line-height: 1.3;
-  max-width: 200px;
-}
-
-/* Data Entity Labels */
-.data-entity-label {
-  background: #fef3c7;
-  color: #92400e;
-  border: 1px solid #f59e0b;
   border-radius: 4px;
-  padding: 4px 8px;
+  padding: 6px 12px;
   font-size: 11px;
   font-weight: 500;
-  margin: 2px 0;
-  display: inline-block;
-}
-
-/* See Data Entities Section */
-.data-entities-section {
-  position: absolute;
-  bottom: 16px;
-  left: 16px;
-  right: 16px;
-}
-
-.data-entities-header {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--foreground);
-  margin-bottom: 8px;
+  cursor: pointer;
   display: flex;
   align-items: center;
   gap: 4px;
 }
 
-.data-entities-toggle {
-  font-size: 10px;
-  color: var(--muted-foreground);
+.workflow-action-text {
+  background: hsl(var(--card));
+  color: hsl(var(--foreground));
+  border: 1px solid hsl(var(--border));
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 400;
 }
 
-/* Edge Styles */
+.workflow-step-node {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 4px;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: hsl(var(--foreground));
+  min-width: 60px;
+  min-height: 24px;
+}
+
 .workflow-edge {
-  stroke: var(--border);
+  stroke: hsl(var(--border));
   stroke-width: 2;
 }
 
 .workflow-edge.active {
-  stroke: var(--workflow-action);
+  stroke: hsl(var(--workflow-action));
   stroke-width: 2;
-}
-
-/* Responsive Layout */
-@media (max-width: 768px) {
-  .workflow-container {
-    border-radius: 8px;
-  }
-  
-  .workflow-header {
-    font-size: 12px;
-    padding: 6px 12px;
-  }
-  
-  .workflow-node {
-    width: 60px;
-    height: 60px;
-    font-size: 10px;
-  }
-  
-  .workflow-action,
-  .workflow-step-node {
-    width: 28px;
-    height: 28px;
-    font-size: 12px;
-  }
 }

@@ -21,6 +21,9 @@ const WorkflowContainerNode = ({ data }: { data: any }) => (
   <div className="workflow-container-inner" style={{ 
     width: data.width, 
     height: data.height, 
+    border: '2px solid hsl(var(--primary))', 
+    borderRadius: '8px',
+    backgroundColor: 'hsl(var(--background))',
     padding: '8px'
   }}>
   </div>
@@ -134,14 +137,14 @@ const WorkflowDiagram = () => {
   const layoutConfig = {
     subNodeY: 70,
     workflowContainerY: 90,  // Position of workflow container
-    statusNodeY: 15,         // Relative to workflow container
-    eventNodeY: 45,          // Relative to workflow container
+    statusNodeY: 20,         // Relative to workflow container
+    eventNodeY: 50,          // Relative to workflow container
     subNodeStartX: 20,
     descriptiveTextX: 120,
     workflowContainerX: 25,  // Position of workflow container
-    eventNodeStartX: 30,     // Relative to workflow container
-    eventNodeSpacing: 90,    // Adjusted spacing for better fit
-    statusNodeOffsetX: 45,   // Offset to center status nodes between events
+    eventNodeStartX: 15,     // Relative to workflow container
+    eventNodeSpacing: 120,   // Reduced spacing for smaller container
+    statusNodeOffsetX: 60,   // Offset to center status nodes between events
   };
 
   // TODO: Replace with actual backend API call
@@ -480,8 +483,8 @@ const WorkflowDiagram = () => {
       type: 'smoothstep',
       style: { 
         stroke: connection.style === 'action' 
-          ? 'var(--workflow-action)' 
-          : 'var(--border)', 
+          ? 'hsl(var(--workflow-action))' 
+          : 'hsl(var(--border))', 
         strokeWidth: 2 
       },
       animated: false,
@@ -707,7 +710,7 @@ const WorkflowDiagram = () => {
   );
 
   return (
-    <div className="workflow-app">
+    <div className="w-full h-screen">
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -721,7 +724,7 @@ const WorkflowDiagram = () => {
         maxZoom={2}
         defaultViewport={{ x: 0, y: 0, zoom: 1 }}
       >
-        <Background color="var(--border)" gap={20} size={1} />
+        <Background color="hsl(var(--border))" gap={20} size={1} />
         <Controls />
       </ReactFlow>
     </div>
