@@ -127,18 +127,18 @@ interface WorkflowData {
 }
 
 const WorkflowDiagram = () => {
-  // Container configuration
+  // Container configuration - increased heights for better content accommodation
   const containerWidth = 350;
-  const containerHeight = 200;
+  const containerHeight = 220; // Increased from 200
   const workflowContainerWidth = 300;
-  const workflowContainerHeight = 100;
+  const workflowContainerHeight = 110; // Increased from 100
   
   // Layout configuration to match Figma design
   const layoutConfig = {
     subNodeY: 70,
     workflowContainerY: 90,  // Position of workflow container
     statusNodeY: 20,         // Relative to workflow container (action buttons on top)
-    eventNodeY: 50,          // Relative to workflow container (status circles below)
+    eventNodeY: 65,          // Relative to workflow container (status circles below) - adjusted for smaller circles
     subNodeStartX: 20,
     descriptiveTextX: 120,
     workflowContainerX: 25,  // Position of workflow container
