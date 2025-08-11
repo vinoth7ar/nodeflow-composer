@@ -139,18 +139,18 @@ const WorkflowDiagram = () => {
   const workflowContainerWidth = 300;
   const workflowContainerHeight = 110; // Increased from 100
   
-  // Layout configuration to match Figma design
+  // Layout configuration to match Figma design - adjusted positions for better layout
   const layoutConfig = {
-    subNodeY: 70,
-    workflowContainerY: 90,  // Position of workflow container
-    statusNodeY: 20,         // Relative to workflow container (action buttons on top)
-    eventNodeY: 65,          // Relative to workflow container (status circles below) - adjusted for smaller circles
+    subNodeY: 40,               // Moved up to reduce space at top
+    workflowContainerY: 75,     // Moved up and reduced gap
+    statusNodeY: 15,            // Relative to workflow container (action buttons higher)
+    eventNodeY: 50,             // Relative to workflow container (status circles closer to center)
     subNodeStartX: 20,
     descriptiveTextX: 120,
-    workflowContainerX: 25,  // Position of workflow container
-    eventNodeStartX: 15,     // Relative to workflow container
-    eventNodeSpacing: 120,   // Reduced spacing for smaller container
-    statusNodeOffsetX: 60,   // Offset to center status nodes between events
+    workflowContainerX: 25,     // Position of workflow container
+    eventNodeStartX: 20,        // More margin from left edge
+    eventNodeSpacing: 100,      // Reduced spacing to fit better
+    statusNodeOffsetX: 50,      // Adjusted offset for better alignment
   };
 
   // TODO: Replace with actual backend API call
@@ -724,15 +724,25 @@ const WorkflowDiagram = () => {
     console.log('Requested nodeId:', nodeId);
     setCurrentStep(nodeId);
     
-    // Update nodes to show selection
+    // FIXED: Clear ALL previous selections first, then set the new one
     setNodes((prevNodes) => 
-      prevNodes.map((node) => ({
-        ...node,
-        data: {
-          ...node.data,
-          selected: node.id === nodeId
+      prevNodes.map((node) => {
+        // Clear all selections first
+        const updatedNode = {
+          ...node,
+          data: {
+            ...node.data,
+            selected: false // Clear all selections
+          }
+        };
+        
+        // Then set the selected node
+        if (node.id === nodeId) {
+          updatedNode.data.selected = true;
         }
-      }))
+        
+        return updatedNode;
+      })
     );
     
     if (reactFlowInstance) {
