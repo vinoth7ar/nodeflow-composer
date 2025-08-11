@@ -721,22 +721,34 @@ const WorkflowDiagram = () => {
 
   const handleStepClick = useCallback((nodeId: string) => {
     console.log('Focusing on node:', nodeId);
+    setCurrentStep(nodeId);
+    
     if (reactFlowInstance) {
       // Find the target node
       const targetNode = nodes.find(node => node.id === nodeId);
       if (targetNode) {
-        // Center the view on the specific node
-        reactFlowInstance.setCenter(
-          targetNode.position.x + (targetNode.width || 150) / 2,
-          targetNode.position.y + (targetNode.height || 50) / 2,
-          { zoom: 1.2, duration: 800 }
-        );
+        // Calculate absolute position for nested nodes
+        let absoluteX = targetNode.position.x;
+        let absoluteY = targetNode.position.y;
         
-        // Update current step without modifying nodes
-        setCurrentStep(nodeId);
+        // If node has a parent, add parent's position
+        if (targetNode.parentId) {
+          const parentNode = nodes.find(node => node.id === targetNode.parentId);
+          if (parentNode) {
+            absoluteX += parentNode.position.x;
+            absoluteY += parentNode.position.y;
+          }
+        }
+        
+        // Center the view on the specific node with better positioning
+        reactFlowInstance.setCenter(
+          absoluteX + 25,
+          absoluteY + 25,
+          { zoom: 1.5, duration: 1000 }
+        );
       }
     }
-  }, [reactFlowInstance, nodes]);
+  }, [reactFlowInstance, nodes, setCurrentStep]);
 
 
   return (

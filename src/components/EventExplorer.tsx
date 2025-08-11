@@ -25,7 +25,7 @@ const EventExplorer: React.FC<EventExplorerProps> = ({ onStepClick, onClose, cur
   const [showLegend, setShowLegend] = useState(true);
   const [showModifiedEntities, setShowModifiedEntities] = useState(false);
 
-  // Mock workflow steps data - in production this would come from props or API
+  // Complete workflow steps data matching the actual flow diagram
   const workflowSteps: WorkflowStep[] = [
     {
       id: 'create-lsa',
@@ -39,7 +39,7 @@ const EventExplorer: React.FC<EventExplorerProps> = ({ onStepClick, onClose, cur
       id: 'accept-lsa',
       number: 2,
       title: 'Accept - LSA - Loan Commitment',
-      description: 'Seller accepts commitment details',
+      description: 'Seller accepts commitment details and finalizes loan parameters',
       nodeId: 'lsa-accept',
       status: 'completed'
     },
@@ -47,7 +47,7 @@ const EventExplorer: React.FC<EventExplorerProps> = ({ onStepClick, onClose, cur
       id: 'submit-los',
       number: 3,
       title: 'Submit - LOS - Application',
-      description: 'Borrower submits loan application',
+      description: 'Borrower submits comprehensive loan application with personal and financial information',
       nodeId: 'los-submit',
       status: 'active'
     },
@@ -55,56 +55,96 @@ const EventExplorer: React.FC<EventExplorerProps> = ({ onStepClick, onClose, cur
       id: 'validate-los',
       number: 4,
       title: 'Validate - LOS - Application',
-      description: 'System validates loan application data',
+      description: 'System validates loan application data for completeness and accuracy',
       nodeId: 'los-validate',
       status: 'pending'
     },
     {
       id: 'pull-credit',
       number: 5,
-      title: 'Pull - Credit Bureau - Credit Check',
-      description: 'Pull credit report and score from credit bureau',
+      title: 'Pull - Credit Bureau - Credit Report',
+      description: 'Retrieve comprehensive credit report and credit score from bureau',
       nodeId: 'credit-pull',
       status: 'pending'
     },
     {
       id: 'analyze-credit',
       number: 6,
-      title: 'Analyze - Credit Bureau - Credit Check',
-      description: 'Analyze credit report and calculate risk score',
+      title: 'Analyze - Credit Bureau - Risk Assessment',
+      description: 'Analyze credit report, calculate risk score, and determine creditworthiness',
       nodeId: 'credit-analyze',
       status: 'pending'
     },
     {
       id: 'collect-docs',
       number: 7,
-      title: 'Collect - Document Mgmt - Documents',
-      description: 'Collect required documents from borrower',
+      title: 'Collect - Document Mgmt - Required Documents',
+      description: 'Collect and upload required documents including income verification, tax returns, and bank statements',
       nodeId: 'dms-collect',
       status: 'pending'
     },
     {
       id: 'verify-docs',
       number: 8,
-      title: 'Verify - Document Mgmt - Documents',
-      description: 'Verify authenticity and completeness of documents',
+      title: 'Verify - Document Mgmt - Document Authentication',
+      description: 'Verify authenticity, completeness, and accuracy of all submitted documents',
       nodeId: 'dms-verify',
       status: 'pending'
     },
     {
       id: 'review-underwriting',
       number: 9,
-      title: 'Review - Underwriting - Risk Assessment',
-      description: 'Review loan application for risk assessment',
+      title: 'Review - Underwriting - Comprehensive Risk Analysis',
+      description: 'Comprehensive review of loan application, credit profile, and risk assessment',
       nodeId: 'underwriting-review',
       status: 'pending'
     },
     {
       id: 'approve-underwriting',
       number: 10,
-      title: 'Approve - Underwriting - Risk Assessment',
-      description: 'Approve or deny loan based on risk assessment',
+      title: 'Approve - Underwriting - Final Decision',
+      description: 'Final approval or denial decision based on comprehensive risk analysis',
       nodeId: 'underwriting-approve',
+      status: 'pending'
+    },
+    {
+      id: 'stage-cwpmf',
+      number: 11,
+      title: 'Stage - CW/PMF - Hypo Loan Preparation',
+      description: 'Stage and prepare hypothetical loan for secondary market pricing',
+      nodeId: 'cwpmf-stage',
+      status: 'pending'
+    },
+    {
+      id: 'accept-cwflume',
+      number: 12,
+      title: 'Accept - CW/FLUME - Commitment Processing',
+      description: 'Accept and process loan commitment through CW/FLUME system',
+      nodeId: 'cwflume-accept',
+      status: 'pending'
+    },
+    {
+      id: 'finalize-cwflume',
+      number: 13,
+      title: 'Finalize - CW/FLUME - Loan Commitment',
+      description: 'Finalize loan commitment and prepare for closing process',
+      nodeId: 'cwflume-finalize',
+      status: 'pending'
+    },
+    {
+      id: 'prepare-closing',
+      number: 14,
+      title: 'Prepare - Closing System - Settlement Preparation',
+      description: 'Prepare all closing documents and coordinate settlement process',
+      nodeId: 'closing-prepare',
+      status: 'pending'
+    },
+    {
+      id: 'close-loan',
+      number: 15,
+      title: 'Close - Closing System - Final Settlement',
+      description: 'Complete final loan closing and settlement process with all parties',
+      nodeId: 'closing-close',
       status: 'pending'
     }
   ];
