@@ -241,3 +241,373 @@ All colors MUST be HSL.
   stroke: hsl(var(--workflow-action));
   stroke-width: 2;
 }
+
+/* Event Explorer Styles */
+.event-explorer {
+  width: 380px;
+  height: 100vh;
+  background: hsl(var(--background));
+  border-left: 1px solid hsl(var(--border));
+  overflow: hidden;
+}
+
+.event-explorer-card {
+  height: 100%;
+  border: none;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.event-explorer-header {
+  flex-shrink: 0;
+  padding: 16px;
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.explorer-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+
+.header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.action-icon {
+  cursor: pointer;
+  color: hsl(var(--muted-foreground));
+  transition: color 0.2s;
+}
+
+.action-icon:hover {
+  color: hsl(var(--foreground));
+}
+
+.close-icon:hover {
+  color: hsl(var(--destructive));
+}
+
+.event-explorer-content {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Search Section */
+.search-section {
+  flex-shrink: 0;
+}
+
+.search-input-wrapper {
+  position: relative;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: hsl(var(--muted-foreground));
+}
+
+.search-input {
+  padding-left: 36px;
+  background: hsl(var(--background));
+  border: 1px solid hsl(var(--border));
+}
+
+/* Steps Section */
+.steps-section {
+  flex: 1;
+  position: relative;
+}
+
+.step-item {
+  position: relative;
+  cursor: pointer;
+  margin-bottom: 12px;
+  transition: all 0.2s ease;
+}
+
+.step-item:hover {
+  transform: translateX(2px);
+}
+
+.step-item.current {
+  background: hsl(var(--accent));
+  border-radius: 8px;
+  padding: 8px;
+  margin: 4px 0;
+}
+
+.step-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.step-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
+  border: 2px solid;
+}
+
+.step-icon.completed {
+  background: hsl(var(--primary));
+  color: white;
+  border-color: hsl(var(--primary));
+}
+
+.step-icon.active {
+  background: hsl(var(--accent-foreground));
+  color: white;
+  border-color: hsl(var(--accent-foreground));
+}
+
+.step-icon.pending {
+  background: hsl(var(--muted));
+  color: hsl(var(--muted-foreground));
+  border-color: hsl(var(--border));
+}
+
+.step-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.step-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+
+.step-description {
+  font-size: 12px;
+  color: hsl(var(--muted-foreground));
+  line-height: 1.4;
+}
+
+.step-connector {
+  position: absolute;
+  left: 15px;
+  top: 40px;
+  width: 2px;
+  height: 20px;
+  background: hsl(var(--border));
+}
+
+.more-steps {
+  text-align: center;
+  color: hsl(var(--muted-foreground));
+  font-size: 12px;
+  padding: 8px;
+}
+
+/* Navigation Section */
+.navigation-section {
+  flex-shrink: 0;
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  padding-top: 16px;
+  border-top: 1px solid hsl(var(--border));
+}
+
+.nav-button {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 14px;
+}
+
+.nav-button.next {
+  background: hsl(var(--accent-foreground));
+  color: white;
+}
+
+.nav-button.next:hover {
+  background: hsl(var(--accent-foreground) / 0.9);
+}
+
+/* Customize Section */
+.customize-section {
+  flex-shrink: 0;
+  padding-top: 16px;
+  border-top: 1px solid hsl(var(--border));
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+  margin-bottom: 12px;
+}
+
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  color: hsl(var(--foreground));
+}
+
+.checkbox-item input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: hsl(var(--primary));
+}
+
+/* Legend Section */
+.legend-section {
+  flex-shrink: 0;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.legend-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.legend-close {
+  cursor: pointer;
+  color: hsl(var(--muted-foreground));
+}
+
+.legend-close:hover {
+  color: hsl(var(--foreground));
+}
+
+.legend-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+}
+
+.legend-box {
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.legend-item.application .legend-box {
+  background: hsl(var(--accent-foreground));
+  color: white;
+}
+
+.legend-item.workflow .legend-box {
+  border: 1px dashed hsl(var(--border));
+  background: transparent;
+  padding: 8px;
+}
+
+.workflow-inner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.legend-circle.business-event {
+  background: hsl(var(--primary));
+  color: white;
+}
+
+.legend-circle.state {
+  background: hsl(var(--muted));
+  color: hsl(var(--muted-foreground));
+}
+
+.legend-arrow {
+  font-size: 12px;
+  color: hsl(var(--muted-foreground));
+}
+
+.legend-item.data-entity .legend-box {
+  background: hsl(var(--muted));
+  color: hsl(var(--muted-foreground));
+  border: 1px solid hsl(var(--border));
+}
+
+/* Journey Tracker */
+.journey-tracker {
+  flex-shrink: 0;
+  padding: 12px;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 8px;
+}
+
+.tracker-header {
+  margin-bottom: 8px;
+}
+
+.progress-info {
+  font-size: 14px;
+  color: hsl(var(--muted-foreground));
+  margin-bottom: 8px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: hsl(var(--muted));
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: hsl(var(--primary));
+  transition: width 0.3s ease;
+}

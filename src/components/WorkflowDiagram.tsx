@@ -1,5 +1,5 @@
 // TEST
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState, useRef } from 'react';
 import {
   ReactFlow,
   Background,
@@ -13,8 +13,10 @@ import {
   NodeTypes,
   Position,
   Handle,
+  ReactFlowInstance,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
+import EventExplorer from './EventExplorer';
 
 // Unified Node Components
 const WorkflowContainerNode = ({ data }: { data: any }) => (
@@ -127,6 +129,9 @@ interface WorkflowData {
 }
 
 const WorkflowDiagram = () => {
+  const [showEventExplorer, setShowEventExplorer] = useState(true);
+  const reactFlowInstance = useRef<ReactFlowInstance | null>(null);
+  
   // Container configuration - increased heights for better content accommodation
   const containerWidth = 350;
   const containerHeight = 220; // Increased from 200
@@ -709,24 +714,121 @@ const WorkflowDiagram = () => {
     [setEdges]
   );
 
+  const onInit = useCallback((instance: ReactFlowInstance) => {
+    reactFlowInstance.current = instance;
+  }, []);
+
+  const handleStepClick = useCallback((nodeId: string) => {
+    if (!reactFlowInstance.current) return;
+
+    const node = nodes.find(n => n.id === nodeId);
+    if (node) {
+      // Focus on the specific node
+      reactFlowInstance.current.setCenter(
+        node.position.x + (node.style?.width as number || 0) / 2,
+        node.position.y + (node.style?.height as number || 0) / 2,
+        { zoom: 1.2, duration: 800 }
+      );
+
+      // Highlight the node temporarily
+      setNodes((prevNodes) =>
+        prevNodes.map((n) => ({
+          ...n,
+          style: {
+            ...n.style,
+            ...(n.id === nodeId ? { 
+              boxShadow: '0 0 20px hsl(var(--primary))',
+              transform: 'scale(1.05)',
+              transition: 'all 0.3s ease',
+              zIndex: 1000 
+            } : {})
+          }
+        }))
+      );
+
+      // Remove highlight after 2 seconds
+      setTimeout(() => {
+        setNodes((prevNodes) =>
+          prevNodes.map((n) => ({
+            ...n,
+            style: {
+              ...n.style,
+              boxShadow: n.id === nodeId ? undefined : n.style?.boxShadow,
+              transform: n.id === nodeId ? undefined : n.style?.transform,
+              zIndex: n.id === nodeId ? undefined : n.style?.zIndex,
+            }
+          }))
+        );
+      }, 2000);
+    }
+  }, [nodes, setNodes]);
+
   return (
-    <div className="w-full h-screen">
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
-        nodeTypes={nodeTypes}
-        fitView
-        fitViewOptions={{ padding: 50 }}
-        minZoom={0.5}
-        maxZoom={2}
-        defaultViewport={{ x: 0, y: 0, zoom: 1 }}
-      >
-        <Background color="hsl(var(--border))" gap={20} size={1} />
-        <Controls />
-      </ReactFlow>
+    <div style={{ 
+      width: '100%', 
+      height: '100%', 
+      display: 'flex',
+      position: 'relative'
+    }}>
+      <div style={{ 
+        flex: 1, 
+        marginRight: showEventExplorer ? '380px' : '0',
+        transition: 'margin-right 0.3s ease'
+      }}>
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onConnect={onConnect}
+          onInit={onInit}
+          nodeTypes={nodeTypes}
+          fitView
+          fitViewOptions={{ padding: 50 }}
+          minZoom={0.5}
+          maxZoom={2}
+          defaultViewport={{ x: 0, y: 0, zoom: 1 }}
+        >
+          <Background color="hsl(var(--border))" gap={20} size={1} />
+          <Controls />
+        </ReactFlow>
+      </div>
+      
+      {showEventExplorer && (
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          right: 0,
+          height: '100%',
+          zIndex: 1000
+        }}>
+          <EventExplorer 
+            onStepClick={handleStepClick}
+            onClose={() => setShowEventExplorer(false)}
+          />
+        </div>
+      )}
+      
+      {!showEventExplorer && (
+        <button
+          onClick={() => setShowEventExplorer(true)}
+          style={{
+            position: 'absolute',
+            top: '16px',
+            right: '16px',
+            padding: '8px 16px',
+            background: 'hsl(var(--primary))',
+            color: 'white',
+            border: 'none',
+            borderRadius: '6px',
+            cursor: 'pointer',
+            zIndex: 1000,
+            fontSize: '14px'
+          }}
+        >
+          Show Explorer
+        </button>
+      )}
     </div>
   );
 };
