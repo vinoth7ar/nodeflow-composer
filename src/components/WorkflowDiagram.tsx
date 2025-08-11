@@ -137,8 +137,8 @@ const WorkflowDiagram = () => {
   const layoutConfig = {
     subNodeY: 70,
     workflowContainerY: 90,  // Position of workflow container
-    statusNodeY: 50,         // Relative to workflow container (swapped)
-    eventNodeY: 20,          // Relative to workflow container (swapped)
+    statusNodeY: 20,         // Relative to workflow container (action buttons on top)
+    eventNodeY: 50,          // Relative to workflow container (status circles below)
     subNodeStartX: 20,
     descriptiveTextX: 120,
     workflowContainerX: 25,  // Position of workflow container
@@ -655,44 +655,44 @@ const WorkflowDiagram = () => {
         { id: 'cwpmf-staged-to-cwflume-accept', source: 'cwpmf-staged', target: 'cwflume-accept', style: 'action' as const },
         { id: 'cwflume-finalized-to-closing-prepare', source: 'cwflume-finalized', target: 'closing-prepare', style: 'action' as const },
         
-        // Internal workflow connections for each application
-        // LSA
+        // Internal workflow connections for each application - updated flow pattern
+        // LSA: create -> created -> accept -> accepted
         { id: 'lsa-create-to-created', source: 'lsa-create', target: 'lsa-created' },
         { id: 'lsa-created-to-accept', source: 'lsa-created', target: 'lsa-accept' },
-        { id: 'lsa-accept-to-accepted', source: 'lsa-accept', target: 'lsa-accepted', style: 'action' as const },
+        { id: 'lsa-accept-to-accepted', source: 'lsa-accept', target: 'lsa-accepted' },
         
-        // LOS
+        // LOS: submit -> submitted -> validate -> validated
         { id: 'los-submit-to-submitted', source: 'los-submit', target: 'los-submitted' },
         { id: 'los-submitted-to-validate', source: 'los-submitted', target: 'los-validate' },
-        { id: 'los-validate-to-validated', source: 'los-validate', target: 'los-validated', style: 'action' as const },
+        { id: 'los-validate-to-validated', source: 'los-validate', target: 'los-validated' },
         
-        // Credit Bureau
+        // Credit Bureau: pull -> pulled -> analyze -> analyzed
         { id: 'credit-pull-to-pulled', source: 'credit-pull', target: 'credit-pulled' },
         { id: 'credit-pulled-to-analyze', source: 'credit-pulled', target: 'credit-analyze' },
-        { id: 'credit-analyze-to-analyzed', source: 'credit-analyze', target: 'credit-analyzed', style: 'action' as const },
+        { id: 'credit-analyze-to-analyzed', source: 'credit-analyze', target: 'credit-analyzed' },
         
-        // Document Management
+        // Document Management: collect -> collected -> verify -> verified
         { id: 'dms-collect-to-collected', source: 'dms-collect', target: 'dms-collected' },
         { id: 'dms-collected-to-verify', source: 'dms-collected', target: 'dms-verify' },
-        { id: 'dms-verify-to-verified', source: 'dms-verify', target: 'dms-verified', style: 'action' as const },
+        { id: 'dms-verify-to-verified', source: 'dms-verify', target: 'dms-verified' },
         
-        // Underwriting
+        // Underwriting: review -> reviewed -> approve -> approved
         { id: 'underwriting-review-to-reviewed', source: 'underwriting-review', target: 'underwriting-reviewed' },
         { id: 'underwriting-reviewed-to-approve', source: 'underwriting-reviewed', target: 'underwriting-approve' },
-        { id: 'underwriting-approve-to-approved', source: 'underwriting-approve', target: 'underwriting-approved', style: 'action' as const },
+        { id: 'underwriting-approve-to-approved', source: 'underwriting-approve', target: 'underwriting-approved' },
         
-        // CW/PMF
+        // CW/PMF: stage -> staged
         { id: 'cwpmf-stage-to-staged', source: 'cwpmf-stage', target: 'cwpmf-staged' },
         
-        // CW/FLUME
-        { id: 'cwflume-accept-to-accepted', source: 'cwflume-accept', target: 'cwflume-accepted', style: 'action' as const },
+        // CW/FLUME: accept -> accepted -> finalize -> finalized
+        { id: 'cwflume-accept-to-accepted', source: 'cwflume-accept', target: 'cwflume-accepted' },
         { id: 'cwflume-accepted-to-finalize', source: 'cwflume-accepted', target: 'cwflume-finalize' },
-        { id: 'cwflume-finalize-to-finalized', source: 'cwflume-finalize', target: 'cwflume-finalized', style: 'action' as const },
+        { id: 'cwflume-finalize-to-finalized', source: 'cwflume-finalize', target: 'cwflume-finalized' },
         
-        // Closing
+        // Closing: prepare -> prepared -> close -> closed
         { id: 'closing-prepare-to-prepared', source: 'closing-prepare', target: 'closing-prepared' },
         { id: 'closing-prepared-to-close', source: 'closing-prepared', target: 'closing-close' },
-        { id: 'closing-close-to-closed', source: 'closing-close', target: 'closing-closed', style: 'action' as const }
+        { id: 'closing-close-to-closed', source: 'closing-close', target: 'closing-closed' }
       ]
     };
     return demoData;
