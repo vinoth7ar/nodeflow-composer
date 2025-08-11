@@ -134,14 +134,14 @@ const WorkflowDiagram = () => {
   const layoutConfig = {
     subNodeY: 70,
     workflowContainerY: 90,  // Position of workflow container
-    statusNodeY: 20,         // Relative to workflow container
-    eventNodeY: 50,          // Relative to workflow container
+    statusNodeY: 15,         // Relative to workflow container
+    eventNodeY: 45,          // Relative to workflow container
     subNodeStartX: 20,
     descriptiveTextX: 120,
     workflowContainerX: 25,  // Position of workflow container
-    eventNodeStartX: 15,     // Relative to workflow container
-    eventNodeSpacing: 120,   // Reduced spacing for smaller container
-    statusNodeOffsetX: 60,   // Offset to center status nodes between events
+    eventNodeStartX: 30,     // Relative to workflow container
+    eventNodeSpacing: 90,    // Adjusted spacing for better fit
+    statusNodeOffsetX: 45,   // Offset to center status nodes between events
   };
 
   // TODO: Replace with actual backend API call
