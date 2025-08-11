@@ -21,9 +21,6 @@ const WorkflowContainerNode = ({ data }: { data: any }) => (
   <div className="workflow-container-inner" style={{ 
     width: data.width, 
     height: data.height, 
-    border: '2px solid hsl(var(--primary))', 
-    borderRadius: '8px',
-    backgroundColor: 'hsl(var(--background))',
     padding: '8px'
   }}>
   </div>
@@ -483,8 +480,8 @@ const WorkflowDiagram = () => {
       type: 'smoothstep',
       style: { 
         stroke: connection.style === 'action' 
-          ? 'hsl(var(--workflow-action))' 
-          : 'hsl(var(--border))', 
+          ? 'var(--workflow-action)' 
+          : 'var(--border)', 
         strokeWidth: 2 
       },
       animated: false,
@@ -710,7 +707,7 @@ const WorkflowDiagram = () => {
   );
 
   return (
-    <div className="w-full h-screen">
+    <div className="workflow-app">
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -724,7 +721,7 @@ const WorkflowDiagram = () => {
         maxZoom={2}
         defaultViewport={{ x: 0, y: 0, zoom: 1 }}
       >
-        <Background color="hsl(var(--border))" gap={20} size={1} />
+        <Background color="var(--border)" gap={20} size={1} />
         <Controls />
       </ReactFlow>
     </div>
