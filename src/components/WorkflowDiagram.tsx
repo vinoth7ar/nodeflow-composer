@@ -141,7 +141,7 @@ const WorkflowDiagram = () => {
   
   // Dynamic layout configuration
   const calculateDynamicLayout = (totalApps: number) => {
-    const baseSpacing = 400; // Base spacing between parent containers
+    const baseSpacing = 450; // Increased spacing between parent containers for better separation
     const containerStartX = 50; // Starting X position for first container
     
     return {
@@ -275,11 +275,11 @@ const WorkflowDiagram = () => {
       }
     ];
 
-    // Calculate dynamic positions
+    // Calculate dynamic positions - alternating row pattern (1,3,5,7 in row 1; 2,4,6,8 in row 2)
     const layoutConfig = calculateDynamicLayout(apps.length);
     const applicationsWithPositions = apps.map((app, index) => {
-      const row = Math.floor(index / 4); // 4 apps per row
-      const col = index % 4;
+      const row = index % 2; // 0 for odd positions (1,3,5,7), 1 for even positions (2,4,6,8)
+      const col = Math.floor(index / 2); // Column based on pairs
       
       return {
         ...app,
@@ -352,11 +352,8 @@ const WorkflowDiagram = () => {
     const layoutConfig = calculateDynamicLayout(workflowData.applications.length);
 
     workflowData.applications.forEach((app, appIndex) => {
-      // Calculate dynamic position for parent containers
-      const dynamicPosition = {
-        x: layoutConfig.containerStartX + (appIndex * layoutConfig.containerSpacing),
-        y: app.position.y // Keep original Y position for row-based layout
-      };
+      // Use the already calculated dynamic position from workflowData
+      const dynamicPosition = app.position;
 
       // Create application container with dynamic position
       nodes.push({
