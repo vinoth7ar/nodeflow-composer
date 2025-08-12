@@ -49,8 +49,12 @@ const WorkflowNode = ({ data }: { data: any }) => (
         w-24 h-24 rounded-full flex items-center justify-center text-sm font-medium
         transition-all duration-300 border-2 shadow-lg
         ${data.selected 
-          ? 'bg-gray-600 border-gray-700 text-white scale-125 shadow-gray-300' 
-          : 'bg-gray-400 border-gray-500 text-white hover:bg-gray-500'
+          ? 'scale-125 shadow-lg' 
+          : 'hover:scale-105'
+        }
+        ${data.status === 'accepted' || data.status === 'validated' || data.status === 'analyzed' || data.status === 'verified' || data.status === 'approved' || data.status === 'finalized' || data.status === 'closed'
+          ? 'bg-green-500 border-green-600 text-white'
+          : 'bg-gray-400 border-gray-500 text-white'
         }
       `}
     >
@@ -468,9 +472,29 @@ const WorkflowDiagram = () => {
         });
       }
 
+      // Helper function to determine node type based on label
+      const getNodeTypeFromLabel = (label: string): string => {
+        // Based on your Figma design:
+        // - Green nodes (action): Accept, Stage, Finalize, Close, Approve, Verify, Analyze, Validate
+        // - Blue nodes (step): Create, Submit, Pull, Collect, Review, Prepare, Enrich
+        const actionLabels = ['accept', 'stage', 'finalize', 'close', 'approve', 'verify', 'analyze', 'validate'];
+        const stepLabels = ['create', 'submit', 'pull', 'collect', 'review', 'prepare', 'enrich'];
+        
+        const lowerLabel = label.toLowerCase();
+        
+        if (actionLabels.includes(lowerLabel)) {
+          return 'action';
+        } else if (stepLabels.includes(lowerLabel)) {
+          return 'step';
+        }
+        
+        return 'action'; // Default fallback
+      };
+
       // Create status nodes - positioned inside workflow container
       app.statusNodes.forEach((statusNode, index) => {
-        const nodeType = statusNode.label.toLowerCase() === 'create' ? 'step' : 'action';
+        // Map specific labels to node types based on Figma design
+        const nodeType = getNodeTypeFromLabel(statusNode.label);
         const xPosition = layoutConfig.eventNodeStartX + layoutConfig.statusNodeOffsetX + (index * layoutConfig.eventNodeSpacing);
         
         nodes.push({
