@@ -18,29 +18,42 @@ import {
 import '@xyflow/react/dist/style.css';
 import EventExplorer from './EventExplorer';
 
-// Unified Node Components
+// Unified Node Components matching Figma design
 const WorkflowContainerNode = ({ data }: { data: any }) => (
-  <div className="workflow-container-inner" style={{ 
-    width: data.width, 
-    height: data.height, 
-    border: '2px solid hsl(var(--primary))', 
-    borderRadius: '8px',
-    backgroundColor: 'hsl(var(--background))',
-    padding: '8px'
-  }}>
+  <div 
+    className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-2"
+    style={{ 
+      width: data.width, 
+      height: data.height,
+    }}
+  >
   </div>
 );
 
 const ContainerNode = ({ data }: { data: any }) => (
-  <div className="workflow-container" style={{ width: data.width, height: data.height, padding: '16px' }}>
-    <div className="workflow-header">{data.label}</div>
+  <div 
+    className="bg-white border-2 border-gray-300 rounded-xl shadow-sm"
+    style={{ width: data.width, height: data.height, padding: '16px' }}
+  >
+    <div className="absolute -top-3 left-3 bg-gray-900 text-white px-3 py-1 rounded text-sm font-semibold">
+      {data.label}
+    </div>
   </div>
 );
 
 const WorkflowNode = ({ data }: { data: any }) => (
   <>
     <Handle type="target" position={Position.Left} style={{ opacity: 0 }} />
-    <div className={`workflow-node ${data.status || ''} ${data.selected ? 'selected' : ''}`}>
+    <div 
+      className={`
+        w-20 h-20 rounded-full flex items-center justify-center text-sm font-medium
+        transition-all duration-300 border-2 shadow-lg
+        ${data.selected 
+          ? 'bg-green-500 border-green-600 text-white scale-125 shadow-green-200' 
+          : 'bg-green-400 border-green-500 text-white hover:bg-green-500'
+        }
+      `}
+    >
       {data.label}
     </div>
     <Handle type="source" position={Position.Right} style={{ opacity: 0 }} />
@@ -50,8 +63,21 @@ const WorkflowNode = ({ data }: { data: any }) => (
 const ActionNode = ({ data }: { data: any }) => (
   <>
     <Handle type="target" position={Position.Left} style={{ opacity: 0 }} />
-    <div className={`workflow-action ${data.selected ? 'selected' : ''}`}>
-      {data.icon && <span>{data.icon}</span>}
+    <div 
+      className={`
+        px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-semibold
+        transition-all duration-300 border-2 min-w-max
+        ${data.selected 
+          ? 'bg-green-500 border-green-600 text-white scale-110 shadow-green-200' 
+          : 'bg-green-400 border-green-500 text-white hover:bg-green-500'
+        }
+      `}
+    >
+      {data.icon && (
+        <span className="w-6 h-6 bg-white text-green-500 rounded-full flex items-center justify-center text-xs font-bold">
+          {data.icon}
+        </span>
+      )}
       {data.label}
     </div>
     <Handle type="source" position={Position.Right} style={{ opacity: 0 }} />
@@ -61,7 +87,7 @@ const ActionNode = ({ data }: { data: any }) => (
 const TextNode = ({ data }: { data: any }) => (
   <>
     <Handle type="target" position={Position.Top} style={{ opacity: 0 }} />
-    <div className="workflow-action-text">
+    <div className="text-gray-700 text-sm font-medium text-center px-2">
       {data.label}
     </div>
     <Handle type="source" position={Position.Bottom} style={{ opacity: 0 }} />
@@ -71,8 +97,21 @@ const TextNode = ({ data }: { data: any }) => (
 const StepNode = ({ data }: { data: any }) => (
   <>
     <Handle type="target" position={Position.Left} style={{ opacity: 0 }} />
-    <div className={`workflow-step-node ${data.selected ? 'selected' : ''}`}>
-      {data.icon && <span style={{ marginRight: '4px' }}>{data.icon}</span>}
+    <div 
+      className={`
+        px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-semibold
+        transition-all duration-300 border-2 min-w-max
+        ${data.selected 
+          ? 'bg-blue-600 border-blue-700 text-white scale-110 shadow-blue-200' 
+          : 'bg-blue-500 border-blue-600 text-white hover:bg-blue-600'
+        }
+      `}
+    >
+      {data.icon && (
+        <span className="w-6 h-6 bg-white text-blue-500 rounded-full flex items-center justify-center text-xs font-bold">
+          {data.icon}
+        </span>
+      )}
       {data.label}
     </div>
     <Handle type="source" position={Position.Right} style={{ opacity: 0 }} />
@@ -686,7 +725,7 @@ const WorkflowDiagram = () => {
     console.log('Requested nodeId:', nodeId);
     setCurrentStep(nodeId);
     
-    // FIXED: Clear ALL previous selections first, then set the new one
+    // Enhanced selection logic to highlight related steps across applications
     setNodes((prevNodes) => 
       prevNodes.map((node) => {
         // Clear all selections first
@@ -694,13 +733,21 @@ const WorkflowDiagram = () => {
           ...node,
           data: {
             ...node.data,
-            selected: false // Clear all selections
+            selected: false
           }
         };
         
-        // Then set the selected node
+        // Highlight the selected node
         if (node.id === nodeId) {
           updatedNode.data.selected = true;
+        } else {
+          // Highlight common steps across applications
+          const stepNumber = extractStepNumber(nodeId);
+          const nodeStepNumber = extractStepNumber(node.id);
+          
+          if (stepNumber && nodeStepNumber && stepNumber === nodeStepNumber) {
+            updatedNode.data.selected = true;
+          }
         }
         
         return updatedNode;
@@ -744,7 +791,7 @@ const WorkflowDiagram = () => {
         reactFlowInstance.setCenter(
           absoluteX + 25,
           absoluteY + 25,
-          { zoom: 1.5, duration: 1000 }
+          { zoom: 1.2, duration: 1000 }
         );
       } else {
         console.error('❌ Node not found:', nodeId);
@@ -757,6 +804,24 @@ const WorkflowDiagram = () => {
     }
     console.log('=== END DEBUG ===');
   }, [reactFlowInstance, nodes, setCurrentStep, setNodes]);
+
+  // Helper function to extract step number from node ID
+  const extractStepNumber = (nodeId: string): string | null => {
+    const stepPatterns = [
+      /create/i, /submit/i, /pull/i, /collect/i, /review/i, /stage/i, /finalize/i, /prepare/i,
+      /accept/i, /validate/i, /analyze/i, /verify/i, /approve/i, /close/i
+    ];
+    
+    const stepNumbers = ['1', '2', '3', '4', '5', '6', '7', '8'];
+    
+    for (let i = 0; i < stepPatterns.length; i++) {
+      if (stepPatterns[i].test(nodeId)) {
+        return stepNumbers[Math.floor(i / 2)]; // Map pairs to numbers
+      }
+    }
+    
+    return null;
+  };
 
 
   return (
