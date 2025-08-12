@@ -70,19 +70,20 @@ const ActionNode = ({ data }: { data: any }) => (
     <div 
       className={`
         px-2 py-1 rounded-md flex items-center gap-1 text-xs font-medium
-        transition-all duration-300 border min-w-max
+        transition-all duration-300 border w-auto inline-flex
         ${data.selected 
           ? 'scale-110 shadow-lg bg-green-500 border-green-600 text-white' 
           : 'bg-green-400 border-green-500 text-white hover:bg-green-500'
         }
       `}
+      style={{ whiteSpace: 'nowrap' }}
     >
       {data.icon && (
-        <span className="w-4 h-4 bg-white text-green-500 rounded-full flex items-center justify-center text-xs font-bold">
+        <span className="w-4 h-4 bg-white text-green-500 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">
           {data.icon}
         </span>
       )}
-      {data.label}
+      <span className="flex-shrink-0">{data.label}</span>
     </div>
     <Handle type="source" position={Position.Right} style={{ opacity: 0 }} />
   </>
@@ -104,19 +105,20 @@ const StepNode = ({ data }: { data: any }) => (
     <div 
       className={`
         px-2 py-1 rounded-md flex items-center gap-1 text-xs font-medium
-        transition-all duration-300 border min-w-max
+        transition-all duration-300 border w-auto inline-flex
         ${data.selected 
           ? 'scale-110 shadow-lg bg-blue-600 border-blue-700 text-white' 
           : 'bg-blue-500 border-blue-600 text-white hover:bg-blue-600'
         }
       `}
+      style={{ whiteSpace: 'nowrap' }}
     >
       {data.icon && (
-        <span className="w-4 h-4 bg-white text-blue-500 rounded-full flex items-center justify-center text-xs font-bold">
+        <span className="w-4 h-4 bg-white text-blue-500 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">
           {data.icon}
         </span>
       )}
-      {data.label}
+      <span className="flex-shrink-0">{data.label}</span>
     </div>
     <Handle type="source" position={Position.Right} style={{ opacity: 0 }} />
   </>
