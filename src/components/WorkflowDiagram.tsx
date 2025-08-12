@@ -69,7 +69,7 @@ const ActionNode = ({ data }: { data: any }) => (
     <Handle type="target" position={Position.Left} style={{ opacity: 0 }} />
     <div 
       className={`
-        px-3 py-2 rounded-lg flex items-center gap-2 text-xs font-semibold
+        px-2 py-1 rounded-md flex items-center gap-1 text-xs font-medium
         transition-all duration-300 border min-w-max
         ${data.selected 
           ? 'scale-110 shadow-lg bg-green-500 border-green-600 text-white' 
@@ -78,7 +78,7 @@ const ActionNode = ({ data }: { data: any }) => (
       `}
     >
       {data.icon && (
-        <span className="w-5 h-5 bg-white text-green-500 rounded-full flex items-center justify-center text-xs font-bold">
+        <span className="w-4 h-4 bg-white text-green-500 rounded-full flex items-center justify-center text-xs font-bold">
           {data.icon}
         </span>
       )}
@@ -103,7 +103,7 @@ const StepNode = ({ data }: { data: any }) => (
     <Handle type="target" position={Position.Left} style={{ opacity: 0 }} />
     <div 
       className={`
-        px-3 py-2 rounded-lg flex items-center gap-2 text-xs font-semibold
+        px-2 py-1 rounded-md flex items-center gap-1 text-xs font-medium
         transition-all duration-300 border min-w-max
         ${data.selected 
           ? 'scale-110 shadow-lg bg-blue-600 border-blue-700 text-white' 
@@ -112,7 +112,7 @@ const StepNode = ({ data }: { data: any }) => (
       `}
     >
       {data.icon && (
-        <span className="w-5 h-5 bg-white text-blue-500 rounded-full flex items-center justify-center text-xs font-bold">
+        <span className="w-4 h-4 bg-white text-blue-500 rounded-full flex items-center justify-center text-xs font-bold">
           {data.icon}
         </span>
       )}
