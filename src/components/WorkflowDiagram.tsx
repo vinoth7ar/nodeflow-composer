@@ -191,14 +191,14 @@ const WorkflowDiagram = () => {
       subNodeY: 35,               // Title positioning 
       workflowContainerY: 85,     // Workflow container positioning
       statusNodeY: 25,            // Status nodes (action buttons) in upper row
-      eventNodeY: 100,            // Event nodes (status circles) in lower row, leftmost
+      eventNodeY: 90,             // Event nodes (status circles) in lower row
       subNodeStartX: 25,          // Left margin for titles
       descriptiveTextX: 25,       // Left margin for descriptions  
       workflowContainerX: 25,     // Workflow container left margin
-      eventNodeStartX: 25,        // Event nodes start from left
-      eventNodeSpacing: 120,      // Spacing between event nodes
-      statusNodeOffsetX: 90,      // Status nodes positioned in the gap
-      statusNodeSpacing: 180,     // Spacing between status nodes
+      eventNodeStartX: 25,        // Event nodes start position
+      eventNodeSpacing: 180,      // Spacing between event nodes
+      statusNodeOffsetX: 25,      // Status nodes aligned with event nodes
+      statusNodeSpacing: 180,     // Same spacing as event nodes for alignment
       containerSpacing: baseSpacing,
       containerStartX: containerStartX,
     };
