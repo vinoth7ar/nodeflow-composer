@@ -598,11 +598,11 @@ const WorkflowDiagram = () => {
       }
     ];
 
-    // Calculate dynamic positions
+    // Calculate dynamic positions - alternating row pattern (1,3,5,7 in row 1; 2,4,6,8 in row 2)
     const layoutConfig = calculateDynamicLayout(apps.length);
     const applicationsWithPositions = apps.map((app, index) => {
-      const row = Math.floor(index / 4); // 4 apps per row
-      const col = index % 4;
+      const row = index % 2; // 0 for odd positions (1,3,5,7), 1 for even positions (2,4,6,8)
+      const col = Math.floor(index / 2); // Column based on pairs
       
       return {
         ...app,
