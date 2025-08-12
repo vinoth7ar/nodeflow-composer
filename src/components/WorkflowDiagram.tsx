@@ -30,52 +30,16 @@ const WorkflowContainerNode = ({ data }: { data: any }) => (
   </div>
 );
 
-const ContainerNode = ({ data }: { data: any }) => {
-  const [isDataEntitiesExpanded, setIsDataEntitiesExpanded] = React.useState(false);
-  
-  return (
-    <div 
-      className="bg-white border-2 border-dashed border-gray-300 rounded-xl shadow-sm relative"
-      style={{ width: data.width, height: data.height, padding: '16px' }}
-    >
-      {/* Title inside the container */}
-      <div className="text-lg font-semibold text-gray-900 mb-4">
-        {data.label}
-      </div>
-      
-      {/* See Data Entities Section */}
-      {data.dataEntities && data.dataEntities.length > 0 && (
-        <div className="absolute bottom-4 left-4 right-4">
-          <button
-            onClick={() => setIsDataEntitiesExpanded(!isDataEntitiesExpanded)}
-            className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-800 mb-2"
-          >
-            <span>See Data Entities</span>
-            <span className={`transform transition-transform ${isDataEntitiesExpanded ? 'rotate-180' : ''}`}>
-              ▲
-            </span>
-          </button>
-          
-          {isDataEntitiesExpanded && (
-            <div className="space-y-1">
-              {data.dataEntities.map((entity: any) => (
-                <div
-                  key={entity.id}
-                  className="bg-yellow-100 border border-yellow-300 px-3 py-1 text-xs text-gray-700 transform -skew-x-12"
-                  style={{
-                    clipPath: 'polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%)'
-                  }}
-                >
-                  {entity.label}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
+const ContainerNode = ({ data }: { data: any }) => (
+  <div 
+    className="bg-white border-2 border-gray-300 rounded-xl shadow-sm"
+    style={{ width: data.width, height: data.height, padding: '16px' }}
+  >
+    <div className="absolute -top-3 left-3 bg-gray-900 text-white px-3 py-1 rounded text-sm font-semibold">
+      {data.label}
     </div>
-  );
-};
+  </div>
+);
 
 const WorkflowNode = ({ data }: { data: any }) => (
   <>
@@ -195,7 +159,6 @@ interface ApplicationNode {
   events: EventNode[];
   statusNodes: StatusNode[];
   descriptiveTexts?: { id: string; label: string }[];
-  dataEntities?: { id: string; label: string }[];
 }
 
 interface WorkflowConnection {
@@ -254,19 +217,14 @@ const WorkflowDiagram = () => {
         id: 'lsa',
         label: 'LSA',
         subNodes: [{ id: 'commitment', label: 'Commitment' }],
-        descriptiveTexts: [{ id: 'accept-desc', label: 'Seller enters commitment details in contract takeout screen. 5 hypo loans are created with base prices.' }],
+        descriptiveTexts: [{ id: 'accept-desc', label: 'Seller accepts commitment details' }],
         statusNodes: [
           { id: 'create', label: 'Create', icon: '1' },
-          { id: 'accept', label: 'Accept', icon: '2' }
+          { id: 'accept', label: 'Accept', icon: '✓' }
         ],
         events: [
           { id: 'created', label: 'created', status: 'created' },
           { id: 'accepted', label: 'accepted', status: 'accepted' }
-        ],
-        dataEntities: [
-          { id: 'loan-commitment', label: 'Loan Commitment' },
-          { id: 'hypo-loan-position', label: 'Hypo Loan Position' },
-          { id: 'hypo-loan-base-price', label: 'Hypo Loan Base Price' }
         ]
       },
       {
@@ -281,10 +239,6 @@ const WorkflowDiagram = () => {
         events: [
           { id: 'submitted', label: 'submitted', status: 'submitted' },
           { id: 'validated', label: 'validated', status: 'validated' }
-        ],
-        dataEntities: [
-          { id: 'loan-application', label: 'Loan Application' },
-          { id: 'borrower-info', label: 'Borrower Information' }
         ]
       },
       {
@@ -447,16 +401,15 @@ const WorkflowDiagram = () => {
       const dynamicPosition = app.position;
 
       // Create application container with dynamic position
-        nodes.push({
-          id: `${app.id}-container`,
-          type: 'container',
-          position: dynamicPosition,
-          data: { 
-            label: app.label,
-            width: containerWidth,
-            height: containerHeight,
-            dataEntities: app.dataEntities || []
-          },
+      nodes.push({
+        id: `${app.id}-container`,
+        type: 'container',
+        position: dynamicPosition,
+        data: { 
+          label: app.label,
+          width: containerWidth,
+          height: containerHeight
+        },
         style: { 
           width: containerWidth, 
           height: containerHeight,
@@ -609,19 +562,14 @@ const WorkflowDiagram = () => {
         id: 'lsa',
         label: 'LSA',
         subNodes: [{ id: 'commitment', label: 'Commitment' }],
-        descriptiveTexts: [{ id: 'accept-desc', label: 'Seller enters commitment details in contract takeout screen. 5 hypo loans are created with base prices.' }],
+        descriptiveTexts: [{ id: 'accept-desc', label: 'Seller accepts commitment details' }],
         statusNodes: [
           { id: 'create', label: 'Create', icon: '1' },
-          { id: 'accept', label: 'Accept', icon: '2' }
+          { id: 'accept', label: 'Accept', icon: '✓' }
         ],
         events: [
           { id: 'created', label: 'created', status: 'created' },
           { id: 'accepted', label: 'accepted', status: 'accepted' }
-        ],
-        dataEntities: [
-          { id: 'loan-commitment', label: 'Loan Commitment' },
-          { id: 'hypo-loan-position', label: 'Hypo Loan Position' },
-          { id: 'hypo-loan-base-price', label: 'Hypo Loan Base Price' }
         ]
       },
       {
@@ -636,10 +584,6 @@ const WorkflowDiagram = () => {
         events: [
           { id: 'submitted', label: 'submitted', status: 'submitted' },
           { id: 'validated', label: 'validated', status: 'validated' }
-        ],
-        dataEntities: [
-          { id: 'loan-application', label: 'Loan Application' },
-          { id: 'borrower-info', label: 'Borrower Information' }
         ]
       },
       {
