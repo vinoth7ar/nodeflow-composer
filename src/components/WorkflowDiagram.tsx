@@ -69,8 +69,8 @@ const ActionNode = ({ data }: { data: any }) => (
     <Handle type="target" position={Position.Left} style={{ opacity: 0 }} />
     <div 
       className={`
-        px-6 py-3 rounded-lg flex items-center gap-2 text-sm font-semibold
-        transition-all duration-300 border-2 min-w-max
+        px-3 py-2 rounded-lg flex items-center gap-2 text-xs font-semibold
+        transition-all duration-300 border min-w-max
         ${data.selected 
           ? 'scale-110 shadow-lg bg-green-500 border-green-600 text-white' 
           : 'bg-green-400 border-green-500 text-white hover:bg-green-500'
@@ -78,7 +78,7 @@ const ActionNode = ({ data }: { data: any }) => (
       `}
     >
       {data.icon && (
-        <span className="w-7 h-7 bg-white text-green-500 rounded-full flex items-center justify-center text-sm font-bold">
+        <span className="w-5 h-5 bg-white text-green-500 rounded-full flex items-center justify-center text-xs font-bold">
           {data.icon}
         </span>
       )}
@@ -103,8 +103,8 @@ const StepNode = ({ data }: { data: any }) => (
     <Handle type="target" position={Position.Left} style={{ opacity: 0 }} />
     <div 
       className={`
-        px-6 py-3 rounded-lg flex items-center gap-2 text-sm font-semibold
-        transition-all duration-300 border-2 min-w-max
+        px-3 py-2 rounded-lg flex items-center gap-2 text-xs font-semibold
+        transition-all duration-300 border min-w-max
         ${data.selected 
           ? 'scale-110 shadow-lg bg-blue-600 border-blue-700 text-white' 
           : 'bg-blue-500 border-blue-600 text-white hover:bg-blue-600'
@@ -112,7 +112,7 @@ const StepNode = ({ data }: { data: any }) => (
       `}
     >
       {data.icon && (
-        <span className="w-7 h-7 bg-white text-blue-500 rounded-full flex items-center justify-center text-sm font-bold">
+        <span className="w-5 h-5 bg-white text-blue-500 rounded-full flex items-center justify-center text-xs font-bold">
           {data.icon}
         </span>
       )}
@@ -176,11 +176,11 @@ const WorkflowDiagram = () => {
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance | null>(null);
   const [currentStep, setCurrentStep] = useState<string>('');
   
-  // Container configuration - larger sizes to match Figma design
-  const containerWidth = 400;
-  const containerHeight = 280;
-  const workflowContainerWidth = 350;
-  const workflowContainerHeight = 140;
+  // Container configuration - larger sizes to accommodate content better
+  const containerWidth = 450;
+  const containerHeight = 320;
+  const workflowContainerWidth = 400;
+  const workflowContainerHeight = 160;
   
   // Dynamic layout configuration - positioned to match Figma exactly
   const calculateDynamicLayout = (totalApps: number) => {
@@ -190,15 +190,15 @@ const WorkflowDiagram = () => {
     return {
       subNodeY: 35,               // Title positioning 
       workflowContainerY: 85,     // Workflow container positioning
-      statusNodeY: 15,            // Status nodes (action buttons) in upper area
-      eventNodeY: 80,             // Event nodes (status circles) in lower area
+      statusNodeY: 45,            // Status nodes (action buttons) positioned between events
+      eventNodeY: 100,            // Event nodes (status circles) in lower area
       subNodeStartX: 25,          // Left margin for titles
       descriptiveTextX: 25,       // Left margin for descriptions  
       workflowContainerX: 25,     // Workflow container left margin
       eventNodeStartX: 25,        // Event nodes left margin
       eventNodeSpacing: 180,      // Horizontal spacing between event nodes
-      statusNodeOffsetX: 25,      // Status nodes left offset from container
-      statusNodeSpacing: 180,     // Horizontal spacing between status nodes
+      statusNodeOffsetX: 105,     // Status nodes centered between event nodes
+      statusNodeSpacing: 180,     // Horizontal spacing between status nodes (matching events)
       containerSpacing: baseSpacing,
       containerStartX: containerStartX,
     };
