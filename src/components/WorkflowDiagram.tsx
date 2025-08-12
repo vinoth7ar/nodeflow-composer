@@ -182,22 +182,23 @@ const WorkflowDiagram = () => {
   const workflowContainerWidth = 350;
   const workflowContainerHeight = 140;
   
-  // Dynamic layout configuration - improved positioning to match Figma
+  // Dynamic layout configuration - positioned to match Figma exactly
   const calculateDynamicLayout = (totalApps: number) => {
     const baseSpacing = 450;
     const containerStartX = 50;
     
     return {
-      subNodeY: 45,               
-      workflowContainerY: 95,     
-      statusNodeY: 20,            
-      eventNodeY: 70,             
-      subNodeStartX: 25,
-      descriptiveTextX: 25,
-      workflowContainerX: 25,     
-      eventNodeStartX: 30,        
-      eventNodeSpacing: 120,      
-      statusNodeOffsetX: 80,      
+      subNodeY: 35,               // Title positioning 
+      workflowContainerY: 85,     // Workflow container positioning
+      statusNodeY: 15,            // Status nodes (action buttons) in upper area
+      eventNodeY: 80,             // Event nodes (status circles) in lower area
+      subNodeStartX: 25,          // Left margin for titles
+      descriptiveTextX: 25,       // Left margin for descriptions  
+      workflowContainerX: 25,     // Workflow container left margin
+      eventNodeStartX: 25,        // Event nodes left margin
+      eventNodeSpacing: 180,      // Horizontal spacing between event nodes
+      statusNodeOffsetX: 25,      // Status nodes left offset from container
+      statusNodeSpacing: 180,     // Horizontal spacing between status nodes
       containerSpacing: baseSpacing,
       containerStartX: containerStartX,
     };
@@ -495,7 +496,7 @@ const WorkflowDiagram = () => {
       app.statusNodes.forEach((statusNode, index) => {
         // Map specific labels to node types based on Figma design
         const nodeType = getNodeTypeFromLabel(statusNode.label);
-        const xPosition = layoutConfig.eventNodeStartX + layoutConfig.statusNodeOffsetX + (index * layoutConfig.eventNodeSpacing);
+        const xPosition = layoutConfig.statusNodeOffsetX + (index * layoutConfig.statusNodeSpacing);
         
         nodes.push({
           id: `${app.id}-${statusNode.id}`,
