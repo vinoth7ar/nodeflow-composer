@@ -499,15 +499,20 @@ const WorkflowDiagram = () => {
         // Map specific labels to node types based on Figma design
         const nodeType = getNodeTypeFromLabel(statusNode.label);
         const xPosition = layoutConfig.statusNodeOffsetX + (index * layoutConfig.statusNodeSpacing);
+        const nodeId = `${app.id}-${statusNode.id}`;
         
         nodes.push({
-          id: `${app.id}-${statusNode.id}`,
+          id: nodeId,
           type: nodeType,
           position: { 
             x: xPosition, 
             y: layoutConfig.statusNodeY 
           },
-          data: { label: statusNode.label, icon: statusNode.icon },
+          data: { 
+            label: statusNode.label, 
+            icon: statusNode.icon,
+            selected: currentStep === nodeId
+          },
           parentId: `${app.id}-workflow-container`,
           extent: 'parent',
         });
@@ -731,11 +736,16 @@ const WorkflowDiagram = () => {
     };
   }, []);
 
-  const initialNodes: Node[] = useMemo(() => generateNodes(workflowData), [workflowData]);
+  const initialNodes: Node[] = useMemo(() => generateNodes(workflowData), [workflowData, currentStep]);
   const initialEdges: Edge[] = useMemo(() => generateEdges(workflowData), [workflowData]);
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
+  // Update nodes when currentStep or initialNodes change
+  React.useEffect(() => {
+    setNodes(initialNodes);
+  }, [initialNodes, setNodes]);
 
   const onConnect = useCallback(
     (params: Connection) => setEdges((eds) => addEdge(params, eds)),
