@@ -186,8 +186,8 @@ const WorkflowDiagram = () => {
   
   // Dynamic layout configuration - positioned to match Figma exactly
   const calculateDynamicLayout = (totalApps: number) => {
-    const baseSpacing = 450;
-    const containerStartX = 50;
+    const baseSpacing = 500;      // Increased horizontal spacing between containers
+    const containerStartX = 80;   // Increased left margin
     
     return {
       subNodeY: 35,               // Title positioning 
@@ -330,7 +330,7 @@ const WorkflowDiagram = () => {
         ...app,
         position: {
           x: layoutConfig.containerStartX + (col * layoutConfig.containerSpacing),
-          y: layoutConfig.containerStartX + (row * 250) // 250px spacing between rows
+          y: layoutConfig.containerStartX + (row * 380) // Increased vertical spacing between rows
         }
       };
     });
@@ -675,7 +675,7 @@ const WorkflowDiagram = () => {
         ...app,
         position: {
           x: layoutConfig.containerStartX + (col * layoutConfig.containerSpacing),
-          y: layoutConfig.containerStartX + (row * 250) // 250px spacing between rows
+          y: layoutConfig.containerStartX + (row * 380) // Increased vertical spacing between rows
         }
       };
     });
