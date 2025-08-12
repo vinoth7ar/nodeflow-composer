@@ -139,18 +139,26 @@ const WorkflowDiagram = () => {
   const workflowContainerWidth = 300;
   const workflowContainerHeight = 110; // Increased from 100
   
-  // Layout configuration to match Figma design - adjusted positions for better layout
-  const layoutConfig = {
-    subNodeY: 40,               // Moved up to reduce space at top
-    workflowContainerY: 75,     // Moved up and reduced gap
-    statusNodeY: 15,            // Relative to workflow container (action buttons higher)
-    eventNodeY: 50,             // Relative to workflow container (status circles closer to center)
-    subNodeStartX: 20,
-    descriptiveTextX: 120,
-    workflowContainerX: 25,     // Position of workflow container
-    eventNodeStartX: 20,        // More margin from left edge
-    eventNodeSpacing: 100,      // Reduced spacing to fit better
-    statusNodeOffsetX: 50,      // Adjusted offset for better alignment
+  // Dynamic layout configuration
+  const calculateDynamicLayout = (totalApps: number) => {
+    const baseSpacing = 400; // Base spacing between parent containers
+    const containerStartX = 50; // Starting X position for first container
+    
+    return {
+      subNodeY: 40,               
+      workflowContainerY: 75,     
+      statusNodeY: 15,            
+      eventNodeY: 50,             
+      subNodeStartX: 20,
+      descriptiveTextX: 120,
+      workflowContainerX: 25,     
+      eventNodeStartX: 20,        
+      eventNodeSpacing: 100,      
+      statusNodeOffsetX: 50,      
+      // Dynamic spacing calculation
+      containerSpacing: baseSpacing,
+      containerStartX: containerStartX,
+    };
   };
 
   // TODO: Replace with actual backend API call
@@ -363,16 +371,23 @@ const WorkflowDiagram = () => {
     };
   };
 
-  // Generate ReactFlow nodes from workflow data
+  // Generate ReactFlow nodes from workflow data with dynamic positioning
   const generateNodes = (workflowData: WorkflowData): Node[] => {
     const nodes: Node[] = [];
+    const layoutConfig = calculateDynamicLayout(workflowData.applications.length);
 
-    workflowData.applications.forEach((app) => {
-      // Create application container
+    workflowData.applications.forEach((app, appIndex) => {
+      // Calculate dynamic position for parent containers
+      const dynamicPosition = {
+        x: layoutConfig.containerStartX + (appIndex * layoutConfig.containerSpacing),
+        y: app.position.y // Keep original Y position for row-based layout
+      };
+
+      // Create application container with dynamic position
       nodes.push({
         id: `${app.id}-container`,
         type: 'container',
-        position: app.position,
+        position: dynamicPosition,
         data: { 
           label: app.label,
           width: containerWidth,
