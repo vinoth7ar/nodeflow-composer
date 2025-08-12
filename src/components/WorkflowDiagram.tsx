@@ -46,11 +46,11 @@ const WorkflowNode = ({ data }: { data: any }) => (
     <Handle type="target" position={Position.Left} style={{ opacity: 0 }} />
     <div 
       className={`
-        w-20 h-20 rounded-full flex items-center justify-center text-sm font-medium
+        w-24 h-24 rounded-full flex items-center justify-center text-sm font-medium
         transition-all duration-300 border-2 shadow-lg
         ${data.selected 
-          ? 'bg-green-500 border-green-600 text-white scale-125 shadow-green-200' 
-          : 'bg-green-400 border-green-500 text-white hover:bg-green-500'
+          ? 'bg-gray-600 border-gray-700 text-white scale-125 shadow-gray-300' 
+          : 'bg-gray-400 border-gray-500 text-white hover:bg-gray-500'
         }
       `}
     >
@@ -65,16 +65,16 @@ const ActionNode = ({ data }: { data: any }) => (
     <Handle type="target" position={Position.Left} style={{ opacity: 0 }} />
     <div 
       className={`
-        px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-semibold
+        px-6 py-3 rounded-lg flex items-center gap-2 text-sm font-semibold
         transition-all duration-300 border-2 min-w-max
         ${data.selected 
-          ? 'bg-green-500 border-green-600 text-white scale-110 shadow-green-200' 
+          ? 'scale-110 shadow-lg bg-green-500 border-green-600 text-white' 
           : 'bg-green-400 border-green-500 text-white hover:bg-green-500'
         }
       `}
     >
       {data.icon && (
-        <span className="w-6 h-6 bg-white text-green-500 rounded-full flex items-center justify-center text-xs font-bold">
+        <span className="w-7 h-7 bg-white text-green-500 rounded-full flex items-center justify-center text-sm font-bold">
           {data.icon}
         </span>
       )}
@@ -87,7 +87,7 @@ const ActionNode = ({ data }: { data: any }) => (
 const TextNode = ({ data }: { data: any }) => (
   <>
     <Handle type="target" position={Position.Top} style={{ opacity: 0 }} />
-    <div className="text-gray-700 text-sm font-medium text-center px-2">
+    <div className="text-gray-700 text-sm font-medium text-left px-2 leading-tight">
       {data.label}
     </div>
     <Handle type="source" position={Position.Bottom} style={{ opacity: 0 }} />
@@ -99,16 +99,16 @@ const StepNode = ({ data }: { data: any }) => (
     <Handle type="target" position={Position.Left} style={{ opacity: 0 }} />
     <div 
       className={`
-        px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-semibold
+        px-6 py-3 rounded-lg flex items-center gap-2 text-sm font-semibold
         transition-all duration-300 border-2 min-w-max
         ${data.selected 
-          ? 'bg-blue-600 border-blue-700 text-white scale-110 shadow-blue-200' 
+          ? 'scale-110 shadow-lg bg-blue-600 border-blue-700 text-white' 
           : 'bg-blue-500 border-blue-600 text-white hover:bg-blue-600'
         }
       `}
     >
       {data.icon && (
-        <span className="w-6 h-6 bg-white text-blue-500 rounded-full flex items-center justify-center text-xs font-bold">
+        <span className="w-7 h-7 bg-white text-blue-500 rounded-full flex items-center justify-center text-sm font-bold">
           {data.icon}
         </span>
       )}
@@ -172,29 +172,28 @@ const WorkflowDiagram = () => {
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance | null>(null);
   const [currentStep, setCurrentStep] = useState<string>('');
   
-  // Container configuration - increased heights for better content accommodation
-  const containerWidth = 350;
-  const containerHeight = 220; // Increased from 200
-  const workflowContainerWidth = 300;
-  const workflowContainerHeight = 110; // Increased from 100
+  // Container configuration - larger sizes to match Figma design
+  const containerWidth = 400;
+  const containerHeight = 280;
+  const workflowContainerWidth = 350;
+  const workflowContainerHeight = 140;
   
-  // Dynamic layout configuration
+  // Dynamic layout configuration - improved positioning to match Figma
   const calculateDynamicLayout = (totalApps: number) => {
-    const baseSpacing = 450; // Increased spacing between parent containers for better separation
-    const containerStartX = 50; // Starting X position for first container
+    const baseSpacing = 450;
+    const containerStartX = 50;
     
     return {
-      subNodeY: 40,               
-      workflowContainerY: 75,     
-      statusNodeY: 15,            
-      eventNodeY: 50,             
-      subNodeStartX: 20,
-      descriptiveTextX: 120,
+      subNodeY: 45,               
+      workflowContainerY: 95,     
+      statusNodeY: 20,            
+      eventNodeY: 70,             
+      subNodeStartX: 25,
+      descriptiveTextX: 25,
       workflowContainerX: 25,     
-      eventNodeStartX: 20,        
-      eventNodeSpacing: 100,      
-      statusNodeOffsetX: 50,      
-      // Dynamic spacing calculation
+      eventNodeStartX: 30,        
+      eventNodeSpacing: 120,      
+      statusNodeOffsetX: 80,      
       containerSpacing: baseSpacing,
       containerStartX: containerStartX,
     };

@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    /* Workflow specific colors */
+    --workflow-action: 134 77% 47%; /* Green for action nodes */
+    --workflow-action-hover: 134 77% 57%;
+    --workflow-status: 215 27% 52%; /* Gray for status nodes */
+    --workflow-status-hover: 215 27% 62%;
+    --workflow-step: 217 91% 60%; /* Blue for step nodes */
+    --workflow-step-hover: 217 91% 70%;
+  }
+}
+
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
 */
